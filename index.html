@@ -67,7 +67,7 @@
                 <img src="logo.svg" alt="TalosPro Logo" style="height: 64px; width: auto; margin: 0 auto;">
             </div>
             <h1 class="text-3xl font-bold mb-2">TalosPro Admin</h1>
-            <p class="text-dark-400">Sign in to access the dashboard</p>
+            <p class="text-dark-400">Secure admin access</p>
         </div>
         
         <!-- Login Form -->
@@ -81,7 +81,7 @@
                         required
                         autocomplete="email"
                         class="input-glow w-full px-4 py-3 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all duration-300"
-                        placeholder="admin@talospro.ai"
+                        placeholder="you@company.com"
                     >
                 </div>
                 
@@ -177,7 +177,19 @@
                     window.location.href = '/dashboard.html';
                 }
             } catch (err) {
-                errorDiv.textContent = err.message;
+                // User-friendly error messages
+                let errorMsg = 'Something went wrong. Please try again.';
+                if (err.message.toLowerCase().includes('email')) {
+                    errorMsg = 'Please enter a valid email address';
+                } else if (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('login')) {
+                    errorMsg = 'Incorrect email or password';
+                } else if (err.message.toLowerCase().includes('admin')) {
+                    errorMsg = 'Admin access required';
+                } else if (err.message) {
+                    errorMsg = err.message;
+                }
+                
+                errorDiv.textContent = errorMsg;
                 errorDiv.classList.remove('hidden');
                 btn.disabled = false;
                 btn.classList.remove('btn-loading');

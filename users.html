@@ -92,11 +92,11 @@
                 <div class="flex items-center justify-between mb-8">
                     <div>
                         <h2 class="text-2xl font-bold mb-2">Users</h2>
-                        <p class="text-dark-400">Manage all registered users</p>
+                        <p class="text-dark-400">View and manage all registered users</p>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="relative">
-                            <input type="text" id="searchInput" placeholder="Search users..." class="input-glow pl-10 pr-4 py-2.5 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all w-64">
+                            <input type="text" id="searchInput" placeholder="Search by name, email, or phone" class="input-glow pl-10 pr-4 py-2.5 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all w-64">
                             <svg class="w-5 h-5 text-dark-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
@@ -124,7 +124,7 @@
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                                     </svg>
-                                    Loading users...
+                                    Loading your users...
                                 </td>
                             </tr>
                         </tbody>
@@ -162,7 +162,7 @@
                 const users = data.users || [];
                 
                 if (users.length === 0) {
-                    document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-dark-500">No users found</td></tr>';
+                    document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-dark-500">No users yet — they\'ll appear here when someone signs up</td></tr>';
                     return;
                 }
                 
@@ -205,7 +205,7 @@
                 
             } catch (err) {
                 console.error('Load users error:', err);
-                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-red-400">Failed to load users</td></tr>';
+                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-red-400">Unable to load users. Please refresh the page.</td></tr>';
             }
         }
         
@@ -229,7 +229,7 @@
                 });
                 
                 if (!res.ok) {
-                    alert('Failed to load profile');
+                    alert('Unable to load profile. Please try again.');
                     return;
                 }
                 
@@ -241,7 +241,7 @@
                 
             } catch (err) {
                 console.error('Load profile error:', err);
-                alert('Failed to load profile');
+                alert('Unable to load profile. Please try again.');
             }
         }
         
