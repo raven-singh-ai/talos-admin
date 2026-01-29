@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — TalosPro Admin</title>
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        dark: { 50: '#f7f7f8', 100: '#ececf1', 200: '#d9d9e3', 300: '#c5c5d2', 400: '#acacbe', 500: '#8e8ea0', 600: '#565869', 700: '#40414f', 800: '#343541', 900: '#202123', 950: '#0d0d0f' },
+                        accent: { DEFAULT: '#7c3aed', light: '#a78bfa', dark: '#5b21b6' },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d0f; }
+        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
+        
+        .mesh-gradient { background: radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), #0d0d0f; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .sidebar-link { transition: all 0.2s ease; }
+        .sidebar-link:hover, .sidebar-link.active { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); }
+        .sidebar-link.active { color: #a78bfa; }
+    </style>
+</head>
+<body class="mesh-gradient min-h-screen font-sans text-white antialiased">
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-full mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="font-semibold">TalosPro Admin</h1>
+                    <p class="text-xs text-dark-500">Settings</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <span class="text-dark-400 text-xs md:text-sm truncate" id="userEmail">admin@talospro.ai</span>
+                <button onclick="logout()" class="text-dark-400 hover:text-white transition text-sm">
+                    <span class="hidden md:inline">Sign out</span>
+                    <svg class="w-5 h-5 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="flex pt-16 md:pt-20">
+        <!-- Sidebar -->
+        <aside class="hidden md:block w-64 fixed left-0 top-20 bottom-0 p-4">
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    Dashboard
+                </a>
+                <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Users
+                </a>
+                <a href="settings.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-4 md:p-6">
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- Header -->
+                <div class="mb-6 md:mb-8">
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">Settings</h2>
+                    <p class="text-dark-400 text-sm md:text-base">Manage your admin account and platform settings</p>
+                </div>
+                
+                <!-- Account Info -->
+                <div class="glass rounded-xl md:rounded-2xl p-6 mb-6">
+                    <h3 class="font-semibold mb-4">Account Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-dark-400 mb-1">Email</label>
+                            <p class="font-medium" id="settingsEmail">admin@talospro.ai</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-dark-400 mb-1">Account Status</label>
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <circle cx="10" cy="10" r="4"/>
+                                </svg>
+                                Active Admin
+                            </span>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-dark-400 mb-1">Member Since</label>
+                            <p class="font-medium" id="memberSince">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security -->
+                <div class="glass rounded-xl md:rounded-2xl p-6 mb-6">
+                    <h3 class="font-semibold mb-4">Security</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between py-3 border-b border-dark-700/50">
+                            <div>
+                                <p class="font-medium">HTTPS Enforced</p>
+                                <p class="text-sm text-dark-400">All connections use secure HTTPS</p>
+                            </div>
+                            <span class="text-emerald-400">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-dark-700/50">
+                            <div>
+                                <p class="font-medium">Session Management</p>
+                                <p class="text-sm text-dark-400">Secure token-based authentication</p>
+                            </div>
+                            <span class="text-emerald-400">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3">
+                            <div>
+                                <p class="font-medium">Rate Limiting</p>
+                                <p class="text-sm text-dark-400">Login attempts are rate-limited</p>
+                            </div>
+                            <span class="text-emerald-400">✓</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Platform Info -->
+                <div class="glass rounded-xl md:rounded-2xl p-6 mb-6">
+                    <h3 class="font-semibold mb-4">Platform Information</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-dark-400">Version</span>
+                            <span class="font-medium">1.0.0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-dark-400">API Endpoint</span>
+                            <span class="font-medium">talos.talospro.ai</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-dark-400">Dashboard URL</span>
+                            <span class="font-medium">admin.talospro.ai</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Help & Support -->
+                <div class="glass rounded-xl md:rounded-2xl p-6 mb-6">
+                    <h3 class="font-semibold mb-4">Help & Support</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <a href="mailto:support@talospro.ai" class="flex items-center gap-3 p-4 rounded-xl bg-dark-900/50 hover:bg-dark-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Email Support</p>
+                                <p class="text-xs text-dark-400">support@talospro.ai</p>
+                            </div>
+                        </a>
+                        <a href="https://talospro.ai" target="_blank" class="flex items-center gap-3 p-4 rounded-xl bg-dark-900/50 hover:bg-dark-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Main Website</p>
+                                <p class="text-xs text-dark-400">talospro.ai</p>
+                            </div>
+                        </a>
+                        <a href="https://x.com/TalosProAI" target="_blank" class="flex items-center gap-3 p-4 rounded-xl bg-dark-900/50 hover:bg-dark-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Follow Us</p>
+                                <p class="text-xs text-dark-400">@TalosProAI</p>
+                            </div>
+                        </a>
+                        <button onclick="showWelcome()" class="flex items-center gap-3 p-4 rounded-xl bg-dark-900/50 hover:bg-dark-800/50 transition text-left">
+                            <div class="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Getting Started</p>
+                                <p class="text-xs text-dark-400">View welcome tour</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="glass rounded-xl md:rounded-2xl p-6 border-red-500/20">
+                    <h3 class="font-semibold mb-4 text-red-400">Danger Zone</h3>
+                    <button onclick="clearData()" class="px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition text-sm">
+                        Clear Local Data
+                    </button>
+                    <p class="text-xs text-dark-500 mt-2">This will log you out and clear cached data</p>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://talos.talospro.ai';
+        const token = localStorage.getItem('adminToken');
+        
+        if (!token) window.location.href = '/login.html';
+        
+        const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        if (user.email) {
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('settingsEmail').textContent = user.email;
+        }
+        if (user.createdAt) {
+            document.getElementById('memberSince').textContent = new Date(user.createdAt).toLocaleDateString();
+        } else {
+            document.getElementById('memberSince').textContent = 'Unknown';
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
+                window.location.href = '/login.html';
+            }
+        }
+        
+        function showWelcome() {
+            localStorage.removeItem('hasSeenWelcome');
+            window.location.href = '/welcome.html';
+        }
+        
+        function clearData() {
+            if (confirm('This will clear all local data and log you out. Continue?')) {
+                localStorage.clear();
+                window.location.href = '/login.html';
+            }
+        }
+    </script>
+</body>
+</html>

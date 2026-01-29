@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — TalosPro Admin</title>
+    <meta name="description" content="TalosPro Admin Dashboard">
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            50: '#f7f7f8',
+                            100: '#ececf1',
+                            200: '#d9d9e3',
+                            300: '#c5c5d2',
+                            400: '#acacbe',
+                            500: '#8e8ea0',
+                            600: '#565869',
+                            700: '#40414f',
+                            800: '#343541',
+                            900: '#202123',
+                            950: '#0d0d0f',
+                        },
+                        accent: {
+                            DEFAULT: '#7c3aed',
+                            light: '#a78bfa',
+                            dark: '#5b21b6',
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d0f; }
+        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #40414f; }
+        
+        .mesh-gradient {
+            background: 
+                radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                #0d0d0f;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.15);
+        }
+        
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+            background-size: 300% 300%;
+            animation: gradient 4s ease infinite;
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover::before { opacity: 1; }
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: #7c3aed;
+            border-radius: inherit;
+            z-index: -1;
+        }
+        
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        .status-online::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+        .sidebar-link.active {
+            color: #a78bfa;
+        }
+    </style>
+</head>
+<body class="mesh-gradient min-h-screen font-sans text-white antialiased">
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-[1800px] mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-semibold">TalosPro Admin</h1>
+                    <p class="text-xs text-dark-500">Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-dark-400 text-sm" id="userEmail">admin@talospro.ai</span>
+                <button onclick="logout()" class="text-dark-400 hover:text-white transition text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign out
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Layout -->
+    <div class="flex pt-20">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 fixed left-0 top-20 bottom-0 p-4 overflow-y-auto">
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Users
+                </a>
+                <a href="subscriptions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Subscriptions
+                </a>
+                <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Messages
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Settings
+                </a>
+            </nav>
+            
+            <!-- System Status -->
+            <div class="mt-8 gradient-border glass rounded-xl p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="relative">
+                        <div class="w-3 h-3 rounded-full bg-emerald-500 status-online"></div>
+                    </div>
+                    <span class="text-sm font-medium">System Online</span>
+                </div>
+                <div class="space-y-2 text-xs text-dark-400">
+                    <div class="flex justify-between">
+                        <span>API Status</span>
+                        <span class="text-emerald-400">Healthy</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>WhatsApp</span>
+                        <span class="text-emerald-400">Connected</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Telegram</span>
+                        <span class="text-emerald-400">Connected</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-6">
+            <div class="max-w-6xl mx-auto">
+                
+                <!-- Welcome Header -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-2">Welcome back 👋</h2>
+                    <p class="text-dark-400">Here's what's happening with your platform today.</p>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    
+                    <div class="gradient-border glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                            <span class="text-emerald-400 text-sm font-medium">+12%</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-1" id="totalUsers">--</h3>
+                        <p class="text-dark-400 text-sm">Total Users</p>
+                    </div>
+                    
+                    <div class="gradient-border glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <span class="text-emerald-400 text-sm font-medium">+8%</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-1" id="activeUsers">--</h3>
+                        <p class="text-dark-400 text-sm">Active Subscriptions</p>
+                    </div>
+                    
+                    <div class="gradient-border glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                            </div>
+                            <span class="text-emerald-400 text-sm font-medium">+24%</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-1" id="messagesCount">--</h3>
+                        <p class="text-dark-400 text-sm">Messages Today</p>
+                    </div>
+                    
+                    <div class="gradient-border glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <span class="text-emerald-400 text-sm font-medium">+18%</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-1" id="mrr">$--</h3>
+                        <p class="text-dark-400 text-sm">Monthly Revenue</p>
+                    </div>
+                </div>
+                
+                <!-- Recent Users & Activity -->
+                <div class="grid lg:grid-cols-2 gap-6">
+                    
+                    <!-- Recent Users -->
+                    <div class="gradient-border glass rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-semibold">Recent Users</h3>
+                            <a href="users.html" class="text-accent text-sm hover:underline">View all</a>
+                        </div>
+                        <div class="space-y-4" id="recentUsers">
+                            <div class="text-center py-8 text-dark-500">
+                                <svg class="animate-spin h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                                </svg>
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Feed -->
+                    <div class="gradient-border glass rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-semibold">Recent Activity</h3>
+                            <span class="text-dark-500 text-sm">Last 24 hours</span>
+                        </div>
+                        <div class="space-y-4" id="activityFeed">
+                            <div class="text-center py-8 text-dark-500">
+                                <svg class="animate-spin h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                                </svg>
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://talos.talospro.ai';
+        const token = localStorage.getItem('adminToken');
+        
+        if (!token) {
+            window.location.href = '/';
+        }
+        
+        // Display user email
+        const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        if (user.email) {
+            document.getElementById('userEmail').textContent = user.email;
+        }
+        
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = '/';
+        }
+        
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+                
+                const data = await res.json();
+                
+                // Update stats
+                document.getElementById('totalUsers').textContent = data.stats?.totalUsers || 0;
+                document.getElementById('activeUsers').textContent = data.stats?.activeSubscriptions || 0;
+                document.getElementById('messagesCount').textContent = data.stats?.messagesToday || 0;
+                document.getElementById('mrr').textContent = '$' + (data.stats?.mrr || 0);
+                
+                // Render recent users
+                const usersHtml = (data.recentUsers || []).slice(0, 5).map(user => `
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-dark-800/50 transition">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-sm font-medium">
+                            ${(user.name || user.email || '?')[0].toUpperCase()}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium truncate">${user.name || 'No name'}</p>
+                            <p class="text-sm text-dark-400 truncate">${user.email || user.phone || 'No contact'}</p>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full ${user.subscriptionStatus === 'active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-dark-700 text-dark-400'}">
+                            ${user.subscriptionStatus || 'free'}
+                        </span>
+                    </div>
+                `).join('') || '<p class="text-center text-dark-500 py-4">No users yet</p>';
+                
+                document.getElementById('recentUsers').innerHTML = usersHtml;
+                
+                // Render activity feed
+                const activityHtml = (data.recentActivity || []).slice(0, 5).map(activity => `
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-dark-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm">${activity.description || activity.type}</p>
+                            <p class="text-xs text-dark-500">${new Date(activity.createdAt).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-center text-dark-500 py-4">No recent activity</p>';
+                
+                document.getElementById('activityFeed').innerHTML = activityHtml;
+                
+            } catch (err) {
+                console.error('Dashboard load error:', err);
+            }
+        }
+        
+        loadDashboard();
+    </script>
+</body>
+</html>

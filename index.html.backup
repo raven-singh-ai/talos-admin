@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — TalosPro</title>
+    <meta name="description" content="TalosPro Admin Dashboard">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            50: '#f7f7f8',
+                            100: '#ececf1',
+                            200: '#d9d9e3',
+                            300: '#c5c5d2',
+                            400: '#acacbe',
+                            500: '#8e8ea0',
+                            600: '#565869',
+                            700: '#40414f',
+                            800: '#343541',
+                            900: '#202123',
+                            950: '#0d0d0f',
+                        },
+                        accent: {
+                            DEFAULT: '#7c3aed',
+                            light: '#a78bfa',
+                            dark: '#5b21b6',
+                        },
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d0f; }
+        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #40414f; }
+        
+        /* Gradient mesh background */
+        .mesh-gradient {
+            background: 
+                radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(124, 58, 237, 0.12) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                #0d0d0f;
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animated gradient border */
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.5), rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        /* Glowing orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
+        /* Button glow effect */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+            background-size: 300% 300%;
+            animation: gradient 4s ease infinite;
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover::before {
+            opacity: 1;
+        }
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: #7c3aed;
+            border-radius: inherit;
+            z-index: -1;
+            transition: background 0.3s ease;
+        }
+        .btn-glow:hover::after {
+            background: #8b5cf6;
+        }
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.5);
+        }
+        
+        /* Input focus effects */
+        .input-glow:focus {
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), 0 0 20px rgba(124, 58, 237, 0.1);
+        }
+        
+        /* Text gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Logo animation */
+        .logo-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="mesh-gradient min-h-screen font-sans text-white antialiased flex items-center justify-center p-4">
+    
+    <!-- Background orbs -->
+    <div class="orb w-96 h-96 bg-purple-600 top-0 left-1/4 fixed"></div>
+    <div class="orb w-80 h-80 bg-blue-600 bottom-0 right-1/4 fixed"></div>
+    <div class="orb w-64 h-64 bg-cyan-500 top-1/2 right-0 fixed"></div>
+    
+    <!-- Login Card -->
+    <div class="w-full max-w-md relative z-10">
+        
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+            <div class="logo-float inline-block mb-6">
+                <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center shadow-2xl shadow-accent/30">
+                    <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold text-gradient mb-2">TalosPro Admin</h1>
+            <p class="text-dark-400">Sign in to access the dashboard</p>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="gradient-border glass-strong rounded-2xl p-8">
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-dark-300 mb-2">Email</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        required
+                        class="input-glow w-full px-4 py-3 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all duration-300"
+                        placeholder="admin@talospro.ai"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-dark-300 mb-2">Password</label>
+                    <input 
+                        type="password" 
+                        id="password"
+                        required
+                        class="input-glow w-full px-4 py-3 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all duration-300"
+                        placeholder="••••••••"
+                    >
+                </div>
+                
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <input type="checkbox" class="w-4 h-4 rounded border-dark-700 bg-dark-900/50 text-accent focus:ring-accent focus:ring-offset-0">
+                        <span class="text-dark-400 group-hover:text-dark-300 transition">Remember me</span>
+                    </label>
+                    <a href="#" class="text-accent hover:text-accent-light transition">Forgot password?</a>
+                </div>
+                
+                <button 
+                    type="submit"
+                    class="btn-glow w-full py-3.5 px-6 rounded-xl bg-accent text-white font-semibold relative z-10"
+                >
+                    Sign In
+                </button>
+                
+                <div id="error" class="hidden p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm text-center"></div>
+            </form>
+        </div>
+        
+        <!-- Footer -->
+        <p class="text-center text-dark-500 text-sm mt-6">
+            Only authorized administrators can access this dashboard
+        </p>
+        
+        <!-- Back to main site -->
+        <div class="text-center mt-4">
+            <a href="https://talospro.ai" class="text-dark-400 hover:text-accent text-sm transition flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to TalosPro
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://talos.talospro.ai';
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+            const btn = e.target.querySelector('button');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>';
+            errorDiv.classList.add('hidden');
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) throw new Error(data.error || 'Login failed');
+                
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminUser', JSON.stringify(data.user));
+                window.location.href = '/dashboard.html';
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+            }
+        });
+        
+        // Check if already logged in
+        if (localStorage.getItem('adminToken')) {
+            window.location.href = '/dashboard.html';
+        }
+    </script>
+</body>
+</html>
