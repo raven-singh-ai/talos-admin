@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logo Test - TalosPro Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0d0d0f;
+            color: white;
+        }
+        .test-box {
+            background: #1a1a1f;
+            border: 1px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        img {
+            display: block;
+            margin: 10px 0;
+        }
+        .status { 
+            padding: 5px 10px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .pass { background: #10b981; color: white; }
+        .fail { background: #ef4444; color: white; }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 TalosPro Logo Diagnostic Test</h1>
+    <p>This page tests if the logo loads properly. Check each section below.</p>
+    
+    <div class="test-box">
+        <h2>Test 1: Local logo.svg (relative path)</h2>
+        <img src="logo.svg" alt="TalosPro Logo" style="height: 80px;" id="test1">
+        <p id="test1-status">Loading...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Test 2: CDN logo (fallback)</h2>
+        <img src="https://talospro.ai/logos-final/talos-crystal-gradient.svg" alt="TalosPro CDN" style="height: 80px;" id="test2">
+        <p id="test2-status">Loading...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Test 3: Logo with onerror fallback</h2>
+        <img src="logo.svg" alt="TalosPro" style="height: 80px;" id="test3" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
+        <p id="test3-status">Loading...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Browser Info</h2>
+        <pre id="browser-info"></pre>
+    </div>
+    
+    <div class="test-box">
+        <h2>Network Test</h2>
+        <button onclick="testFetch()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Run Fetch Test</button>
+        <pre id="fetch-results">Click button to test...</pre>
+    </div>
+    
+    <script>
+        // Test image loading
+        function testImage(id, statusId) {
+            const img = document.getElementById(id);
+            const status = document.getElementById(statusId);
+            
+            img.onload = () => {
+                status.innerHTML = '<span class="status pass">✓ PASS</span> - Image loaded successfully';
+            };
+            
+            img.onerror = () => {
+                status.innerHTML = '<span class="status fail">✗ FAIL</span> - Image failed to load';
+            };
+            
+            // Timeout check
+            setTimeout(() => {
+                if (!img.complete || img.naturalHeight === 0) {
+                    status.innerHTML = '<span class="status fail">✗ TIMEOUT</span> - Image did not load within 5 seconds';
+                }
+            }, 5000);
+        }
+        
+        // Run tests
+        testImage('test1', 'test1-status');
+        testImage('test2', 'test2-status');
+        testImage('test3', 'test3-status');
+        
+        // Browser info
+        document.getElementById('browser-info').textContent = 
+            `User Agent: ${navigator.userAgent}\n` +
+            `URL: ${window.location.href}\n` +
+            `Protocol: ${window.location.protocol}\n` +
+            `Host: ${window.location.host}`;
+        
+        // Fetch test
+        async function testFetch() {
+            const results = document.getElementById('fetch-results');
+            results.textContent = 'Testing...\n';
+            
+            try {
+                // Test local logo
+                results.textContent += '\n[1] Testing: /logo.svg\n';
+                const res1 = await fetch('/logo.svg');
+                results.textContent += `Status: ${res1.status} ${res1.statusText}\n`;
+                results.textContent += `Content-Type: ${res1.headers.get('content-type')}\n`;
+                results.textContent += `Size: ${res1.headers.get('content-length')} bytes\n`;
+                
+                // Test CDN logo
+                results.textContent += '\n[2] Testing: CDN logo\n';
+                const res2 = await fetch('https://talospro.ai/logos-final/talos-crystal-gradient.svg');
+                results.textContent += `Status: ${res2.status} ${res2.statusText}\n`;
+                results.textContent += `Content-Type: ${res2.headers.get('content-type')}\n`;
+                
+                results.textContent += '\n✅ All fetch tests passed!';
+            } catch (err) {
+                results.textContent += `\n❌ ERROR: ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
