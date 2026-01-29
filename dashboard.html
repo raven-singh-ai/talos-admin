@@ -57,7 +57,7 @@
                     </svg>
                 </button>
                 
-                <a href="/dashboard.html">
+                <a href="dashboard.html">
                     <img src="logo.svg" alt="TalosPro" class="h-10 w-auto" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
                 </a>
             </div>
@@ -80,7 +80,7 @@
         <aside id="sidebar" class="mobile-menu fixed md:static w-64 left-0 top-16 md:top-20 bottom-0 p-4 overflow-y-auto z-40 glass md:glass-none md:bg-transparent">
             <!-- Logo in Sidebar (Mobile) -->
             <div class="md:hidden mb-4 pb-4 border-b border-dark-700">
-                <a href="/dashboard.html" class="flex justify-center">
+                <a href="dashboard.html" class="flex justify-center">
                     <img src="logo.svg" alt="TalosPro" class="h-10 w-auto" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
                 </a>
             </div>
@@ -281,7 +281,7 @@
         const API_BASE = 'https://talos-backend.vercel.app';
         const token = localStorage.getItem('adminToken');
         
-        if (!token) window.location.href = '/login.html';
+        if (!token) window.location.href = 'index.html';
         
         // Display user email
         const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
@@ -339,18 +339,15 @@
                 document.getElementById('mrr').textContent = '$' + (data.mrr || 0);
                 
                 // Load recent users
-                console.log('Fetching users from API...');
                 const usersRes = await fetch(`${API_BASE}/api/admin/users`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
                 if (!usersRes.ok) {
-                    console.error('Users API error:', usersRes.status, await usersRes.text());
                     throw new Error(`API returned ${usersRes.status}`);
                 }
                 
                 const usersData = await usersRes.json();
-                console.log('Users API response:', usersData);
                 const users = (usersData.users || []).slice(0, 5);
                 
                 const usersHtml = users.map(user => `
