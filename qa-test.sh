@@ -6,7 +6,7 @@ echo ""
 
 # Check all HTML files exist
 echo "📄 Checking HTML files..."
-for file in index.html welcome.html dashboard.html users.html subscriptions.html settings.html; do
+for file in index.html dashboard.html users.html subscriptions.html settings.html; do
   if [ -f "$file" ]; then
     echo "✓ $file exists"
   else

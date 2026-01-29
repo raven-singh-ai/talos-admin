@@ -234,17 +234,6 @@
                                 <p class="text-xs text-dark-400">@TalosProAI</p>
                             </div>
                         </a>
-                        <button onclick="showWelcome()" class="flex items-center gap-3 p-4 rounded-xl bg-dark-900/50 hover:bg-dark-800/50 transition text-left">
-                            <div class="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-medium">Getting Started</p>
-                                <p class="text-xs text-dark-400">View welcome tour</p>
-                            </div>
-                        </button>
                     </div>
                 </div>
                 
@@ -293,10 +282,6 @@
             overlay.classList.toggle('hidden');
         }
         
-        function showWelcome() {
-            localStorage.removeItem('hasSeenWelcome');
-            window.location.href = 'welcome.html';
-        }
         
         function clearData() {
             if (confirm('This will clear all local data and sign you out. Continue?')) {

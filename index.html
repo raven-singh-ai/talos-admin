@@ -171,13 +171,8 @@
                 localStorage.setItem('adminToken', data.token);
                 localStorage.setItem('adminUser', JSON.stringify(data.user));
                 
-                // Check if first login
-                const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-                if (!hasSeenWelcome) {
-                    window.location.href = '/welcome.html';
-                } else {
-                    window.location.href = '/dashboard.html';
-                }
+                // Redirect to dashboard
+                window.location.href = '/dashboard.html';
             } catch (err) {
                 // User-friendly error messages
                 let errorMsg = 'Something went wrong. Please try again.';
