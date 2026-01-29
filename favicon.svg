@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <!-- Main warm gradient -->
+    <linearGradient id="warmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="60%" stop-color="#A855F7"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+    
+    <!-- Highlight -->
+    <linearGradient id="highlightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C4B5FD"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    
+    <!-- Deep face -->
+    <linearGradient id="deepGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6D28D9"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    
+    <!-- Shadow -->
+    <linearGradient id="shadowGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#9333EA"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Simplified crystal for favicon - bold, clear shapes -->
+  <g>
+    <!-- Left face -->
+    <polygon 
+      points="16,2 5,12 8,27 16,17" 
+      fill="url(#deepGrad)"/>
+    
+    <!-- Right face -->
+    <polygon 
+      points="16,2 27,12 24,27 16,17" 
+      fill="url(#warmGrad)"/>
+    
+    <!-- Bottom left -->
+    <polygon 
+      points="8,27 16,17 16,30" 
+      fill="url(#shadowGrad)"/>
+    
+    <!-- Bottom right -->
+    <polygon 
+      points="24,27 16,17 16,30" 
+      fill="#EA580C"/>
+    
+    <!-- Top highlight -->
+    <polygon 
+      points="16,2 10,8 16,11 22,8" 
+      fill="url(#highlightGrad)"
+      opacity="0.95"/>
+  </g>
+</svg>

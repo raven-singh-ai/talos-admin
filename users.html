@@ -196,10 +196,8 @@
                             ${new Date(user.createdAt).toLocaleDateString()}
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button class="text-dark-400 hover:text-white transition p-2">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
+                            <button onclick="viewProfile('${user.id}')" class="text-accent hover:text-accent/80 transition text-sm font-medium">
+                                View Profile
                             </button>
                         </td>
                     </tr>
@@ -222,6 +220,115 @@
         });
         
         loadUsers();
+        
+        // View user profile
+        async function viewProfile(userId) {
+            try {
+                const res = await fetch(`${API_BASE}/api/profile/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) {
+                    alert('Failed to load profile');
+                    return;
+                }
+                
+                const data = await res.json();
+                const profile = data.profile;
+                
+                // Show profile modal
+                showProfileModal(profile);
+                
+            } catch (err) {
+                console.error('Load profile error:', err);
+                alert('Failed to load profile');
+            }
+        }
+        
+        function showProfileModal(profile) {
+            const modal = document.getElementById('profileModal');
+            
+            // Calculate completeness color
+            const completeness = profile.profileCompleteness || 0;
+            let completenessColor = 'text-red-400';
+            if (completeness >= 75) completenessColor = 'text-green-400';
+            else if (completeness >= 50) completenessColor = 'text-yellow-400';
+            
+            // Format birthday
+            const birthday = profile.birthday ? new Date(profile.birthday).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Not set';
+            
+            // Format last update
+            const lastUpdate = profile.lastProfileUpdate ? new Date(profile.lastProfileUpdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never';
+            
+            document.getElementById('profileContent').innerHTML = `
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold">${profile.fullName || profile.name || 'No name set'}</h3>
+                    <div class="text-right">
+                        <p class="text-sm text-dark-400">Profile Completeness</p>
+                        <p class="text-2xl font-bold ${completenessColor}">${completeness}%</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
+                        <p class="text-xs text-dark-400 mb-1">Full Name</p>
+                        <p class="font-medium">${profile.fullName || '-'}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
+                        <p class="text-xs text-dark-400 mb-1">Preferred Name</p>
+                        <p class="font-medium">${profile.preferredName || '-'}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
+                        <p class="text-xs text-dark-400 mb-1">📍 Location</p>
+                        <p class="font-medium">${profile.location || '-'}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
+                        <p class="text-xs text-dark-400 mb-1">🎂 Birthday</p>
+                        <p class="font-medium">${birthday}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
+                        <p class="text-xs text-dark-400 mb-1">💼 Occupation</p>
+                        <p class="font-medium">${profile.occupation || '-'}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
+                        <p class="text-xs text-dark-400 mb-1">🌍 Timezone</p>
+                        <p class="font-medium">${profile.timezone || '-'}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700 col-span-2">
+                        <p class="text-xs text-dark-400 mb-1">🎯 Interests</p>
+                        <p class="font-medium">${profile.interests && profile.interests.length > 0 ? profile.interests.join(', ') : '-'}</p>
+                    </div>
+                </div>
+                
+                <div class="p-4 rounded-xl bg-accent/5 border border-accent/20 text-sm text-dark-300">
+                    <p class="text-xs text-dark-400 mb-1">ℹ️ Auto-extracted from conversations</p>
+                    <p>Last updated: ${lastUpdate}</p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
     </script>
+    
+    <!-- Profile Modal -->
+    <div id="profileModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="gradient-border glass rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold">User Profile</h2>
+                <button onclick="closeProfileModal()" class="text-dark-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="profileContent">
+                Loading...
+            </div>
+        </div>
+    </div>
 </body>
 </html>
