@@ -136,6 +136,7 @@
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Contact</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Platform</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Status</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Cost</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Joined</th>
                                 <th class="text-right px-6 py-4 text-sm font-medium text-dark-400">Actions</th>
                             </tr>
@@ -234,6 +235,11 @@
                                 ${user.subscriptionStatus || 'free'}
                             </span>
                         </td>
+                        <td class="px-6 py-4">
+                            <span class="font-medium text-accent">
+                                $${(user.cost || 0).toFixed(2)}
+                            </span>
+                        </td>
                         <td class="px-6 py-4 text-sm text-dark-400">
                             ${new Date(user.createdAt).toLocaleDateString()}
                         </td>
@@ -294,7 +300,9 @@
                     telegram: data.telegramChatId ? 'Connected' : 'Not connected',
                     profileCompleteness: data.emailVerified ? 50 : 25,
                     lastProfileUpdate: data.updatedAt,
-                    stats: data.stats || {}
+                    stats: data.stats || {},
+                    cost: data.stats?.estimatedCost || 0,
+                    totalMessages: data.stats?.totalMessages || 0
                 };
                 
                 // Show profile modal
@@ -327,6 +335,30 @@
                     <div class="text-right">
                         <p class="text-sm text-dark-400">Profile Completeness</p>
                         <p class="text-2xl font-bold ${completenessColor}">${completeness}%</p>
+                    </div>
+                </div>
+                
+                <!-- Usage & Costs Section -->
+                <div class="p-5 rounded-xl bg-orange-500/5 border border-orange-500/20 mb-6">
+                    <h4 class="font-semibold mb-4 flex items-center gap-2">
+                        <span>💰</span>
+                        Usage & Costs
+                    </h4>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-xs text-dark-400 mb-1">Total Messages</p>
+                            <p class="text-2xl font-bold">${profile.totalMessages || 0}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-dark-400 mb-1">Estimated Cost</p>
+                            <p class="text-2xl font-bold text-accent">$${(profile.cost || 0).toFixed(2)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-dark-400 mb-1">Cost/Message</p>
+                            <p class="text-2xl font-bold text-dark-500">
+                                ${profile.totalMessages > 0 ? '$' + ((profile.cost || 0) / profile.totalMessages).toFixed(4) : '-'}
+                            </p>
+                        </div>
                     </div>
                 </div>
                 
