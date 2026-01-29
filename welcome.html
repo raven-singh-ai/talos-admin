@@ -40,7 +40,17 @@
 </head>
 <body class="mesh-gradient min-h-screen font-sans text-white antialiased flex items-center justify-center p-4">
     
-    <div class="w-full max-w-4xl relative z-10">
+    <!-- Header with Logo -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-full mx-auto px-6 py-4 flex items-center justify-center">
+            <a href="/dashboard.html" class="flex items-center gap-3">
+                <img src="logo.svg" alt="TalosPro Logo" class="h-8 w-auto">
+                <span class="font-semibold">TalosPro Admin</span>
+            </a>
+        </div>
+    </header>
+    
+    <div class="w-full max-w-4xl relative z-10 mt-20">
         
         <!-- Welcome Header -->
         <div class="text-center mb-12">
@@ -144,7 +154,7 @@
         <div class="text-center">
             <button 
                 onclick="completeWelcome()"
-                class="px-8 py-4 rounded-xl bg-accent hover:bg-accent-dark text-white font-semibold transition-all shadow-lg shadow-accent/30"
+                class="btn-primary btn-lg"
             >
                 Go to Dashboard →
             </button>

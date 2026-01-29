@@ -42,20 +42,21 @@
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 glass">
         <div class="max-w-[1800px] mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                </div>
+            <a href="/dashboard.html" class="flex items-center gap-3">
+                <img src="logo.svg" alt="TalosPro Logo" class="h-8 w-auto">
                 <div>
                     <h1 class="font-semibold">TalosPro Admin</h1>
                     <p class="text-xs text-dark-500">Users</p>
                 </div>
-            </div>
+            </a>
             <div class="flex items-center gap-4">
                 <span class="text-dark-400 text-sm" id="userEmail">admin@talospro.ai</span>
-                <button onclick="logout()" class="text-dark-400 hover:text-white transition text-sm">Sign out</button>
+                <button onclick="logout()" class="btn-ghost btn-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign out
+                </button>
             </div>
         </div>
     </header>
