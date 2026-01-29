@@ -179,7 +179,7 @@
             
             try {
                 // Show skeleton loader
-                tableBody.innerHTML = window.createSkeleton('row', 5);
+                tableBody.innerHTML = window.createSkeleton ? window.createSkeleton('row', 5) : '<tr><td colspan="7" class="text-center py-8 text-dark-400">Loading...</td></tr>';
                 
                 // Use cached fetch with performance monitoring
                 window.perfMonitor.start('loadUsers');
@@ -284,7 +284,7 @@
             
             // Show modal with skeleton immediately
             modal.classList.remove('hidden');
-            content.innerHTML = window.createSkeleton('card', 3);
+            content.innerHTML = window.createSkeleton ? window.createSkeleton('card', 3) : '<div class="text-center py-8 text-dark-400">Loading...</div>';
             
             try {
                 window.perfMonitor.start('viewProfile');
