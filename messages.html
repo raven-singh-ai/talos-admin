@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Messages — TalosPro Admin</title>
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="button-system.css">
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d0f; }
+        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
+        
+        .mesh-gradient { background: radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), #0d0d0f; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.15); }
+        .sidebar-link { transition: all 0.2s ease; }
+        .sidebar-link:hover, .sidebar-link.active { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); }
+        .sidebar-link.active { color: #a78bfa; }
+        
+        .mobile-menu { transform: translateX(-100%); transition: transform 0.3s ease; }
+        .mobile-menu.open { transform: translateX(0); }
+        
+        @media (min-width: 768px) {
+            .mobile-menu-btn { display: none; }
+        }
+
+        .message-card {
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .message-card:hover {
+            border-left-color: #9333ea;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .platform-badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .platform-telegram { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .platform-whatsapp { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    </style>
+</head>
+<body class="mesh-gradient min-h-screen font-sans text-white antialiased">
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-full mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleMobileMenu()" class="btn-icon mobile-menu-btn md:hidden">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <a href="dashboard.html">
+                    <img src="logo.svg" alt="TalosPro" class="h-10 w-auto" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
+                </a>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <span class="text-dark-400 text-xs md:text-sm truncate max-w-32 md:max-w-none" id="userEmail">admin@talospro.ai</span>
+                <button onclick="logout()" class="btn-ghost btn-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span class="hidden md:inline">Sign out</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Layout -->
+    <div class="flex pt-16 md:pt-20">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="mobile-menu fixed md:static w-64 left-0 top-16 md:top-20 bottom-0 p-4 overflow-y-auto z-40 glass md:glass-none md:bg-transparent">
+            <div class="md:hidden mb-4 pb-4 border-b border-dark-700">
+                <a href="dashboard.html" class="flex justify-center">
+                    <img src="logo.svg" alt="TalosPro" class="h-10 w-auto" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
+                </a>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    Dashboard
+                </a>
+                <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Users
+                </a>
+                <a href="referrals.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    Referrals
+                </a>
+                <a href="waitlist.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                    Waitlist
+                </a>
+                <a href="revenue.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Revenue
+                </a>
+                <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    Analytics
+                </a>
+                <a href="messages.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                    Messages
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-8 overflow-x-hidden">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <!-- Page Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">Messages & Support</h1>
+                        <p class="text-dark-400 mt-1">Recent user messages and support requests</p>
+                    </div>
+                    <button onclick="location.reload()" class="btn-ghost btn-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="glass rounded-2xl p-4 md:p-6">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <label class="block text-sm text-dark-400 mb-2">Platform</label>
+                            <select id="platformFilter" class="w-full bg-dark-900 border border-dark-700 rounded-lg px-4 py-2 text-white">
+                                <option value="">All Platforms</option>
+                                <option value="telegram">Telegram</option>
+                                <option value="whatsapp">WhatsApp</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm text-dark-400 mb-2">Search User</label>
+                            <input type="text" id="searchInput" placeholder="Search by name or email..." 
+                                   class="w-full bg-dark-900 border border-dark-700 rounded-lg px-4 py-2 text-white">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm text-dark-400 mb-2">Date Range</label>
+                            <select id="dateFilter" class="w-full bg-dark-900 border border-dark-700 rounded-lg px-4 py-2 text-white">
+                                <option value="today">Today</option>
+                                <option value="week" selected>This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages List -->
+                <div id="messagesList" class="space-y-4">
+                    <div class="glass rounded-2xl p-6 text-center text-dark-400">
+                        Loading messages...
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'https://talos-backend.vercel.app/api';
+
+        // Auth check
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+
+        // Load user info
+        const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        document.getElementById('userEmail').textContent = user.email || 'admin@talospro.ai';
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = 'index.html';
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Mock messages data (replace with real API call)
+        const mockMessages = [
+            {
+                id: 1,
+                user: { name: 'John Doe', email: 'john@example.com' },
+                platform: 'telegram',
+                message: 'Can you help me track my expenses?',
+                timestamp: new Date(Date.now() - 3600000).toISOString(),
+                replied: false
+            },
+            {
+                id: 2,
+                user: { name: 'Sarah Smith', email: 'sarah@example.com' },
+                platform: 'whatsapp',
+                message: 'How do I upgrade to Pro?',
+                timestamp: new Date(Date.now() - 7200000).toISOString(),
+                replied: true
+            },
+            {
+                id: 3,
+                user: { name: 'Mike Johnson', email: 'mike@example.com' },
+                platform: 'telegram',
+                message: 'The AI is not responding to my commands',
+                timestamp: new Date(Date.now() - 10800000).toISOString(),
+                replied: false
+            }
+        ];
+
+        // Render messages
+        function renderMessages(messages) {
+            const container = document.getElementById('messagesList');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="glass rounded-2xl p-6 text-center text-dark-400">
+                        No messages found
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="glass rounded-2xl p-6 message-card">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="font-bold text-lg">${msg.user.name}</div>
+                                <span class="platform-badge platform-${msg.platform}">${msg.platform}</span>
+                                ${msg.replied ? 
+                                    '<span class="text-xs text-green-400">✓ Replied</span>' : 
+                                    '<span class="text-xs text-yellow-400">⚠ Pending</span>'
+                                }
+                            </div>
+                            <div class="text-sm text-dark-400">${msg.user.email}</div>
+                        </div>
+                        <div class="text-sm text-dark-400">
+                            ${formatTimestamp(msg.timestamp)}
+                        </div>
+                    </div>
+                    <div class="text-white mb-4 p-4 bg-dark-900/50 rounded-lg">
+                        ${msg.message}
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="replyToMessage(${msg.id})" class="btn-sm btn-primary">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                            </svg>
+                            Reply
+                        </button>
+                        <button onclick="viewConversation(${msg.id})" class="btn-sm btn-ghost">View Full Thread</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 3600000) return `${Math.floor(diff / 60000)} min ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Reply to message
+        function replyToMessage(id) {
+            const reply = prompt('Enter your reply:');
+            if (reply) {
+                alert('Reply sent! (This is a demo - implement real reply functionality)');
+            }
+        }
+
+        // View conversation
+        function viewConversation(id) {
+            alert('View conversation ' + id + ' (implement modal or new page)');
+        }
+
+        // Filter messages
+        function filterMessages() {
+            const platform = document.getElementById('platformFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const date = document.getElementById('dateFilter').value;
+            
+            let filtered = mockMessages;
+            
+            if (platform) {
+                filtered = filtered.filter(m => m.platform === platform);
+            }
+            
+            if (search) {
+                filtered = filtered.filter(m => 
+                    m.user.name.toLowerCase().includes(search) ||
+                    m.user.email.toLowerCase().includes(search)
+                );
+            }
+            
+            renderMessages(filtered);
+        }
+
+        // Event listeners
+        document.getElementById('platformFilter').addEventListener('change', filterMessages);
+        document.getElementById('searchInput').addEventListener('input', filterMessages);
+        document.getElementById('dateFilter').addEventListener('change', filterMessages);
+
+        // Initial render
+        renderMessages(mockMessages);
+    </script>
+</body>
+</html>

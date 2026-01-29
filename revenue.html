@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Revenue — TalosPro Admin</title>
+    
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="button-system.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d0f; }
+        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
+        
+        .mesh-gradient { background: radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), #0d0d0f; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.15); }
+        .sidebar-link { transition: all 0.2s ease; }
+        .sidebar-link:hover, .sidebar-link.active { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); }
+        .sidebar-link.active { color: #a78bfa; }
+        
+        .mobile-menu { transform: translateX(-100%); transition: transform 0.3s ease; }
+        .mobile-menu.open { transform: translateX(0); }
+        
+        @media (min-width: 768px) {
+            .mobile-menu-btn { display: none; }
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-active { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status-trialing { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-canceled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-past_due { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+    </style>
+</head>
+<body class="mesh-gradient min-h-screen font-sans text-white antialiased">
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-full mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleMobileMenu()" class="btn-icon mobile-menu-btn md:hidden">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <a href="dashboard.html">
+                    <img src="logo.svg" alt="TalosPro" class="h-10 w-auto" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
+                </a>
+            </div>
+            <div class="flex items-center gap-2 md:gap-4">
+                <span class="text-dark-400 text-xs md:text-sm truncate max-w-32 md:max-w-none" id="userEmail">admin@talospro.ai</span>
+                <button onclick="logout()" class="btn-ghost btn-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span class="hidden md:inline">Sign out</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Layout -->
+    <div class="flex pt-16 md:pt-20">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="mobile-menu fixed md:static w-64 left-0 top-16 md:top-20 bottom-0 p-4 overflow-y-auto z-40 glass md:glass-none md:bg-transparent">
+            <div class="md:hidden mb-4 pb-4 border-b border-dark-700">
+                <a href="dashboard.html" class="flex justify-center">
+                    <img src="logo.svg" alt="TalosPro" class="h-10 w-auto" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
+                </a>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    Dashboard
+                </a>
+                <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Users
+                </a>
+                <a href="referrals.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    Referrals
+                </a>
+                <a href="waitlist.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                    Waitlist
+                </a>
+                <a href="revenue.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Revenue
+                </a>
+                <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    Analytics
+                </a>
+                <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                    Messages
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-8 overflow-x-hidden">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <!-- Page Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">Revenue & Billing</h1>
+                        <p class="text-dark-400 mt-1">Track subscriptions and revenue</p>
+                    </div>
+                    <button onclick="location.reload()" class="btn-ghost btn-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <div class="glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-dark-400 text-sm">MRR</span>
+                            <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl md:text-3xl font-bold" id="mrr">$0</div>
+                        <div class="text-sm text-dark-400 mt-1">Monthly Recurring Revenue</div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-dark-400 text-sm">ARR</span>
+                            <svg class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl md:text-3xl font-bold" id="arr">$0</div>
+                        <div class="text-sm text-dark-400 mt-1">Annual Recurring Revenue</div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-dark-400 text-sm">Active Subscriptions</span>
+                            <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl md:text-3xl font-bold" id="activeSubs">0</div>
+                    </div>
+
+                    <div class="glass rounded-2xl p-6 card-hover">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-dark-400 text-sm">Churn Rate</span>
+                            <svg class="w-5 h-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                            </svg>
+                        </div>
+                        <div class="text-2xl md:text-3xl font-bold" id="churnRate">0%</div>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-4">Revenue Over Time</h2>
+                    <canvas id="revenueChart" height="80"></canvas>
+                </div>
+
+                <!-- Subscriptions Table -->
+                <div class="glass rounded-2xl p-4 md:p-6 overflow-x-auto">
+                    <h2 class="text-xl font-bold mb-4">Active Subscriptions</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[600px]">
+                            <thead>
+                                <tr class="border-b border-dark-700">
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium">User</th>
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium">Plan</th>
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium">Status</th>
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium">Next Billing</th>
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium">Amount</th>
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscriptionsTable">
+                                <tr>
+                                    <td colspan="6" class="text-center py-8 text-dark-400">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'https://talos-backend.vercel.app/api';
+        let revenueChart = null;
+
+        // Auth check
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+
+        // Load user info
+        const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        document.getElementById('userEmail').textContent = user.email || 'admin@talospro.ai';
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = 'index.html';
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Load revenue stats
+        async function loadRevenueStats() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/revenue/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('mrr').textContent = `$${data.stats.mrr || 0}`;
+                    document.getElementById('arr').textContent = `$${data.stats.arr || 0}`;
+                    document.getElementById('activeSubs').textContent = data.stats.activeSubscriptions || 0;
+                    document.getElementById('churnRate').textContent = data.stats.churnRate || '0%';
+                    
+                    // Create chart
+                    if (data.stats.chartData) {
+                        createRevenueChart(data.stats.chartData);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load revenue stats:', error);
+            }
+        }
+
+        // Create revenue chart
+        function createRevenueChart(chartData) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            if (revenueChart) {
+                revenueChart.destroy();
+            }
+            
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels || [],
+                    datasets: [{
+                        label: 'Monthly Revenue',
+                        data: chartData.values || [],
+                        borderColor: 'rgb(147, 51, 234)',
+                        backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleColor: '#fff',
+                            bodyColor: '#fff'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#9ca3af' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#9ca3af' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load subscriptions
+        async function loadSubscriptions() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/users?limit=100`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.users) {
+                    const activeSubs = data.users.filter(u => 
+                        u.subscription && ['active', 'trialing'].includes(u.subscription.status)
+                    );
+                    renderSubscriptions(activeSubs);
+                }
+            } catch (error) {
+                console.error('Failed to load subscriptions:', error);
+                document.getElementById('subscriptionsTable').innerHTML = 
+                    '<tr><td colspan="6" class="text-center py-8 text-red-400">Failed to load subscriptions</td></tr>';
+            }
+        }
+
+        // Render subscriptions table
+        function renderSubscriptions(users) {
+            const tbody = document.getElementById('subscriptionsTable');
+            
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-dark-400">No active subscriptions</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const sub = user.subscription;
+                const nextBilling = sub.currentPeriodEnd || sub.trialEndsAt;
+                const amount = sub.plan === 'pro' ? '$20' : '$0';
+                
+                return `
+                    <tr class="border-b border-dark-700/50 hover:bg-dark-800/30">
+                        <td class="py-3 px-4">
+                            <div class="font-medium">${user.name || 'Unknown'}</div>
+                            <div class="text-sm text-dark-400">${user.email}</div>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-medium capitalize">${sub.plan}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="status-badge status-${sub.status}">${sub.status}</span>
+                        </td>
+                        <td class="py-3 px-4 text-sm text-dark-400">
+                            ${nextBilling ? new Date(nextBilling).toLocaleDateString() : '-'}
+                        </td>
+                        <td class="py-3 px-4 font-medium">
+                            ${amount}
+                        </td>
+                        <td class="py-3 px-4">
+                            <button onclick="viewSubscription('${user.id}')" class="btn-sm btn-ghost">View</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // View subscription details
+        function viewSubscription(userId) {
+            window.location.href = `users.html?id=${userId}`;
+        }
+
+        // Initial load
+        loadRevenueStats();
+        loadSubscriptions();
+    </script>
+</body>
+</html>
