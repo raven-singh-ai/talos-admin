@@ -184,30 +184,24 @@
         
         async function loadUsers() {
             try {
-                console.log('[DEBUG] Fetching users from:', `${API_BASE}/api/admin/users`);
-                console.log('[DEBUG] Token exists:', !!token);
                 
-                const res = await fetch(`${API_BASE}/api/admin/users`, {
+                const res = await fetch(`${API_BASE}/api/admin/tenants`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
-                console.log('[DEBUG] Response status:', res.status);
                 
                 if (res.status === 401) { 
-                    console.error('[ERROR] Unauthorized - logging out');
                     logout(); 
                     return; 
                 }
                 
                 if (!res.ok) {
                     const errorText = await res.text();
-                    console.error('[ERROR] API error:', res.status, errorText);
                     throw new Error(`API returned ${res.status}: ${errorText}`);
                 }
                 
                 const data = await res.json();
-                console.log('[DEBUG] Users data:', data);
-                const users = data.users || [];
+                const users = data.tenants || [];
                 
                 if (users.length === 0) {
                     document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-dark-500">No users yet — they\'ll appear here when someone signs up</td></tr>';
@@ -252,7 +246,6 @@
                 `).join('');
                 
             } catch (err) {
-                console.error('[FATAL] Load users error:', err);
                 document.getElementById('usersTable').innerHTML = `
                     <tr><td colspan="6" class="px-6 py-12 text-center">
                         <div class="text-red-400 mb-2">⚠️ Unable to load users</div>

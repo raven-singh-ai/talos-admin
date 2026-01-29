@@ -43,7 +43,7 @@
     <!-- Header with Logo -->
     <header class="fixed top-0 left-0 right-0 z-50 glass">
         <div class="max-w-full mx-auto px-6 py-4 flex items-center justify-center">
-            <a href="/dashboard.html">
+            <a href="dashboard.html">
                 <img src="logo.svg" alt="TalosPro" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'" class="h-12 w-auto">
             </a>
         </div>
@@ -165,12 +165,12 @@
     <script>
         // Require auth
         if (!localStorage.getItem('adminToken')) {
-            window.location.href = '/login.html';
+            window.location.href = 'index.html';
         }
         
         function completeWelcome() {
             localStorage.setItem('hasSeenWelcome', 'true');
-            window.location.href = '/dashboard.html';
+            window.location.href = 'dashboard.html';
         }
     </script>
     <!-- Tab Synchronization -->
