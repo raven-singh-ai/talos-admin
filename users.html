@@ -181,14 +181,17 @@
                 // Show skeleton loader
                 tableBody.innerHTML = window.createSkeleton ? window.createSkeleton('row', 5) : '<tr><td colspan="7" class="text-center py-8 text-dark-400">Loading...</td></tr>';
                 
-                // Use cached fetch with performance monitoring
-                window.perfMonitor.start('loadUsers');
+                // Use cached fetch with performance monitoring (fallback to regular fetch)
+                if (window.perfMonitor) window.perfMonitor.start('loadUsers');
                 
-                const data = await window.dedupeFetch(`${API_BASE}/api/admin/tenants`, {
+                const fetchFn = window.dedupeFetch || fetch;
+                const response = await fetchFn(`${API_BASE}/api/admin/tenants`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }, 2 * 60 * 1000); // Cache for 2 minutes
                 
-                window.perfMonitor.end('loadUsers');
+                const data = window.dedupeFetch ? response : await response.json();
+                
+                if (window.perfMonitor) window.perfMonitor.end('loadUsers');
                 const users = data.tenants || [];
                 
                 if (users.length === 0) {
@@ -287,14 +290,17 @@
             content.innerHTML = window.createSkeleton ? window.createSkeleton('card', 3) : '<div class="text-center py-8 text-dark-400">Loading...</div>';
             
             try {
-                window.perfMonitor.start('viewProfile');
+                if (window.perfMonitor) window.perfMonitor.start('viewProfile');
                 
-                // Use cached fetch (cache for 1 minute)
-                const data = await window.dedupeFetch(`${API_BASE}/api/admin/tenants/${userId}`, {
+                // Use cached fetch (cache for 1 minute) - fallback to regular fetch
+                const fetchFn = window.dedupeFetch || fetch;
+                const response = await fetchFn(`${API_BASE}/api/admin/tenants/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }, 60 * 1000);
                 
-                window.perfMonitor.end('viewProfile');
+                const data = window.dedupeFetch ? response : await response.json();
+                
+                if (window.perfMonitor) window.perfMonitor.end('viewProfile');
                 
                 // Map API response to profile modal format
                 const profile = {
