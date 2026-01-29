@@ -33,7 +33,7 @@
                 
                 <a href="dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <img src="logo.svg" alt="TalosPro" class="h-8 w-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
-                    <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">TalosPro</span>
+                    <span class="hidden sm:inline-block"><img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-6" /></span>
                 </a>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
@@ -57,7 +57,7 @@
             <div class="md:hidden mb-4 pb-4 border-b border-dark-700">
                 <a href="dashboard.html" class="flex items-center justify-center gap-3">
                     <img src="logo.svg" alt="TalosPro" class="h-8 w-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
-                    <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">TalosPro</span>
+                    <span class="hidden sm:inline-block"><img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-6" /></span>
                 </a>
             </div>
             
@@ -334,34 +334,35 @@
         
         async function loadDashboard() {
             try {
-                const res = await fetch(`${API_BASE}/api/admin/stats`, {
+                window.perfMonitor.start('dashboard');
+                
+                // Use cached fetch for stats (cache for 30 seconds)
+                const data = await window.dedupeFetch(`${API_BASE}/api/admin/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                });
+                }, 30 * 1000);
                 
-                if (res.status === 401) { logout(); return; }
+                // Update stats with data attributes for animated counters
+                const totalUsersEl = document.getElementById('totalUsers');
+                const activeUsersEl = document.getElementById('activeUsers');
+                const messagesEl = document.getElementById('messagesCount');
                 
-                const data = await res.json();
+                totalUsersEl.dataset.value = data.users?.total || 0;
+                activeUsersEl.dataset.value = data.users?.activeLastWeek || 0;
+                messagesEl.dataset.value = data.messages?.total || 0;
                 
-                // Update stats
-                document.getElementById('totalUsers').textContent = data.users?.total || 0;
-                document.getElementById('activeUsers').textContent = data.users?.activeLastWeek || 0;
-                document.getElementById('messagesCount').textContent = data.messages?.total || 0;
+                // These will be animated by modern-ui.js
+                totalUsersEl.textContent = data.users?.total || 0;
+                activeUsersEl.textContent = data.users?.activeLastWeek || 0;
+                messagesEl.textContent = data.messages?.total || 0;
+                
+                // Non-animated stats
                 document.getElementById('mrr').textContent = '$' + (data.revenue?.estimatedMRR || 0);
                 document.getElementById('avgCost').textContent = '$' + (data.costs?.averageCostPerUser || 0).toFixed(2);
                 
-                // Load recent users
-                
-                const usersRes = await fetch(`${API_BASE}/api/admin/tenants?limit=5`, {
+                // Load recent users (cached for 1 minute)
+                const usersData = await window.dedupeFetch(`${API_BASE}/api/admin/tenants?limit=5`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                
-                if (!usersRes.ok) {
-                    const errorText = await usersRes.text();
-                    throw new Error(`API returned ${usersRes.status}: ${errorText.substring(0, 100)}`);
-                }
-                
-                const usersData = await usersRes.json();
+                }, 60 * 1000);
                 const users = (usersData.tenants || []).slice(0, 5);
                 
                 const usersHtml = users.map(user => `
@@ -377,7 +378,7 @@
                             ${user.subscription?.plan || 'free'}
                         </span>
                     </div>
-                `).join('') || '<p class="text-center text-dark-500 py-4 text-sm">No users yet — they\'ll appear here when someone signs up</p>';
+                `).join('') || '<p class="text-center text-dark-500 py-4 text-sm">No users found</p>';
                 
                 document.getElementById('recentUsers').innerHTML = usersHtml;
                 
@@ -396,20 +397,28 @@
                     </div>
                 `;
                 
+                window.perfMonitor.end('dashboard');
+                
             } catch (err) {
                 console.error('Dashboard load error:', err);
-                // Show error state instead of loading skeleton
+                
+                // Check for auth error
+                if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+                    logout();
+                    return;
+                }
+                
+                // Show error state
                 document.getElementById('totalUsers').textContent = 'Error';
                 document.getElementById('activeUsers').textContent = 'Error';
                 document.getElementById('messagesCount').textContent = 'Error';
                 document.getElementById('mrr').textContent = 'Error';
                 
-                // Display error in recent users section
                 document.getElementById('recentUsers').innerHTML = `
                     <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-center">
-                        <p class="text-red-400 mb-2">⚠️ Unable to load users</p>
+                        <p class="text-red-400 mb-2">Failed to load data</p>
                         <p class="text-xs text-dark-400">${err.message}</p>
-                        <p class="text-xs text-dark-500 mt-2">Check browser console for details</p>
+                        <button onclick="loadDashboard()" class="btn-primary mt-3">Retry</button>
                     </div>
                 `;
             }
@@ -428,6 +437,7 @@
     
     <!-- Tab Synchronization -->
     <script src="tab-sync.js"></script>
+    <script src="performance-optimizer.js"></script>
     <script src="modern-ui.js"></script>
 </body>
 </html>

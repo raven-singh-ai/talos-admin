@@ -33,7 +33,7 @@
                 
                 <a href="dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <img src="logo.svg" alt="TalosPro" class="h-8 w-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
-                    <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">TalosPro</span>
+                    <span class="hidden sm:inline-block"><img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-6" /></span>
                 </a>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
@@ -55,7 +55,7 @@
             <div class="md:hidden mb-4 pb-4 border-b border-dark-700">
                 <a href="dashboard.html" class="flex items-center justify-center gap-3">
                     <img src="logo.svg" alt="TalosPro" class="h-8 w-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
-                    <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">TalosPro</span>
+                    <span class="hidden sm:inline-block"><img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-6" /></span>
                 </a>
             </div>
             
@@ -175,32 +175,30 @@
         }
         
         async function loadUsers() {
+            const tableBody = document.getElementById('usersTable');
+            
             try {
+                // Show skeleton loader
+                tableBody.innerHTML = window.createSkeleton('row', 5);
                 
-                const res = await fetch(`${API_BASE}/api/admin/tenants`, {
+                // Use cached fetch with performance monitoring
+                window.perfMonitor.start('loadUsers');
+                
+                const data = await window.dedupeFetch(`${API_BASE}/api/admin/tenants`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                });
+                }, 2 * 60 * 1000); // Cache for 2 minutes
                 
-                
-                if (res.status === 401) { 
-                    logout(); 
-                    return; 
-                }
-                
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error(`API returned ${res.status}: ${errorText}`);
-                }
-                
-                const data = await res.json();
+                window.perfMonitor.end('loadUsers');
                 const users = data.tenants || [];
                 
                 if (users.length === 0) {
-                    document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-dark-500">No users yet — they\'ll appear here when someone signs up</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-dark-500">No users found</td></tr>';
                     return;
                 }
                 
-                document.getElementById('usersTable').innerHTML = users.map(user => `
+                // Render users with smooth transition
+                tableBody.style.opacity = '0';
+                tableBody.innerHTML = users.map(user => `
                     <tr class="border-b border-dark-700/30 hover:bg-dark-800/30 transition cursor-pointer" onclick="viewProfile('${user.id}')">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
@@ -242,13 +240,26 @@
                     </tr>
                 `).join('');
                 
+                // Smooth fade-in
+                setTimeout(() => {
+                    tableBody.style.transition = 'opacity 0.3s ease';
+                    tableBody.style.opacity = '1';
+                }, 50);
+                
             } catch (err) {
-                document.getElementById('usersTable').innerHTML = `
+                console.error('Load users error:', err);
+                
+                // Check for auth error
+                if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+                    logout();
+                    return;
+                }
+                
+                tableBody.innerHTML = `
                     <tr><td colspan="6" class="px-6 py-12 text-center">
-                        <div class="text-red-400 mb-2">⚠️ Unable to load users</div>
+                        <div class="text-red-400 mb-2">Failed to load users</div>
                         <div class="text-sm text-dark-400">${err.message}</div>
-                        <div class="text-xs text-dark-500 mt-2">Check browser console (F12) for details</div>
-                        <button onclick="location.reload()" class="btn-primary mt-4">Reload Page</button>
+                        <button onclick="loadUsers()" class="btn-primary mt-4">Retry</button>
                     </td></tr>
                 `;
             }
@@ -268,17 +279,22 @@
         
         // View user profile
         async function viewProfile(userId) {
+            const modal = document.getElementById('profileModal');
+            const content = document.getElementById('profileContent');
+            
+            // Show modal with skeleton immediately
+            modal.classList.remove('hidden');
+            content.innerHTML = window.createSkeleton('card', 3);
+            
             try {
-                const res = await fetch(`${API_BASE}/api/admin/tenants/${userId}`, {
+                window.perfMonitor.start('viewProfile');
+                
+                // Use cached fetch (cache for 1 minute)
+                const data = await window.dedupeFetch(`${API_BASE}/api/admin/tenants/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                });
+                }, 60 * 1000);
                 
-                if (!res.ok) {
-                    alert('Unable to load profile. Please try again.');
-                    return;
-                }
-                
-                const data = await res.json();
+                window.perfMonitor.end('viewProfile');
                 
                 // Map API response to profile modal format
                 const profile = {
@@ -296,12 +312,21 @@
                     totalMessages: data.stats?.totalMessages || 0
                 };
                 
-                // Show profile modal
+                // Render profile
                 showProfileModal(profile);
                 
             } catch (err) {
                 console.error('Load profile error:', err);
-                alert('Unable to load profile. Please try again.');
+                
+                content.innerHTML = `
+                    <div class="text-center p-8">
+                        <div class="text-red-400 mb-2">Failed to load profile</div>
+                        <div class="text-sm text-dark-400">${err.message}</div>
+                        <button onclick="closeProfileModal(); viewProfile('${userId}')" class="btn-primary mt-4">
+                            Retry
+                        </button>
+                    </div>
+                `;
             }
         }
         
@@ -384,13 +409,10 @@
                     </div>
                 </div>
                 
-                <div class="p-4 rounded-xl bg-accent/5 border border-accent/20 text-sm text-dark-300">
-                    <p class="text-xs text-dark-400 mb-1">ℹ️ Auto-extracted from conversations</p>
+                <div class="p-4 rounded-xl bg-dark-800/30 border border-dark-700/30 text-sm text-dark-400">
                     <p>Last updated: ${lastUpdate}</p>
                 </div>
             `;
-            
-            modal.classList.remove('hidden');
         }
         
         function closeProfileModal() {
@@ -416,6 +438,7 @@
     </div>
     <!-- Tab Synchronization -->
     <script src="tab-sync.js"></script>
+    <script src="performance-optimizer.js"></script>
     <script src="modern-ui.js"></script>
 </body>
 </html>
