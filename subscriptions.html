@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users — TalosPro Admin</title>
+    <title>Subscriptions — TalosPro Admin</title>
     
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,11 +89,11 @@
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                     Dashboard
                 </a>
-                <a href="users.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent">
+                <a href="users.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                     Users
                 </a>
-                <a href="subscriptions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent text-dark-400 hover:text-white">
+                <a href="subscriptions.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                     Subscriptions
                 </a>
@@ -112,14 +112,14 @@
             <div class="max-w-6xl mx-auto">
                 
                 <!-- Header -->
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center justify-between mb-6 md:mb-8">
                     <div>
-                        <h2 class="text-2xl font-bold mb-2">Users</h2>
-                        <p class="text-dark-400">View and manage all registered users</p>
+                        <h2 class="text-xl md:text-2xl font-bold mb-2">Subscriptions</h2>
+                        <p class="text-dark-400 text-sm md:text-base">View and manage all user subscriptions</p>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="relative">
-                            <input type="text" id="searchInput" placeholder="Search by name, email, or phone" class="input-glow pl-10 pr-4 py-2.5 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all w-64">
+                            <input type="text" id="searchInput" placeholder="Search by email..." class="input-glow pl-10 pr-4 py-2.5 rounded-xl bg-dark-900/50 border border-dark-700 text-white placeholder-dark-500 focus:outline-none transition-all w-48 md:w-64">
                             <svg class="w-5 h-5 text-dark-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
@@ -127,27 +127,54 @@
                     </div>
                 </div>
                 
-                <!-- Users Table -->
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+                    <div class="glass rounded-xl p-4">
+                        <p class="text-dark-400 text-xs md:text-sm mb-1">Total Subscriptions</p>
+                        <p class="text-xl md:text-2xl font-bold" id="totalSubs">
+                            <div class="h-6 w-12 bg-dark-800 rounded animate-pulse"></div>
+                        </p>
+                    </div>
+                    <div class="glass rounded-xl p-4">
+                        <p class="text-dark-400 text-xs md:text-sm mb-1">Active</p>
+                        <p class="text-xl md:text-2xl font-bold text-emerald-400" id="activeSubs">
+                            <div class="h-6 w-12 bg-dark-800 rounded animate-pulse"></div>
+                        </p>
+                    </div>
+                    <div class="glass rounded-xl p-4">
+                        <p class="text-dark-400 text-xs md:text-sm mb-1">Trialing</p>
+                        <p class="text-xl md:text-2xl font-bold text-yellow-400" id="trialSubs">
+                            <div class="h-6 w-12 bg-dark-800 rounded animate-pulse"></div>
+                        </p>
+                    </div>
+                    <div class="glass rounded-xl p-4">
+                        <p class="text-dark-400 text-xs md:text-sm mb-1">MRR</p>
+                        <p class="text-xl md:text-2xl font-bold text-accent" id="mrr">
+                            <div class="h-6 w-16 bg-dark-800 rounded animate-pulse"></div>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Subscriptions Table -->
                 <div class="gradient-border glass rounded-2xl overflow-hidden">
                     <table class="w-full">
                         <thead>
                             <tr class="border-b border-dark-700/50">
-                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">User</th>
-                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Contact</th>
-                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Platform</th>
-                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Status</th>
-                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Joined</th>
-                                <th class="text-right px-6 py-4 text-sm font-medium text-dark-400">Actions</th>
+                                <th class="text-left px-4 md:px-6 py-4 text-xs md:text-sm font-medium text-dark-400">User</th>
+                                <th class="text-left px-4 md:px-6 py-4 text-xs md:text-sm font-medium text-dark-400 hidden md:table-cell">Plan</th>
+                                <th class="text-left px-4 md:px-6 py-4 text-xs md:text-sm font-medium text-dark-400">Status</th>
+                                <th class="text-left px-4 md:px-6 py-4 text-xs md:text-sm font-medium text-dark-400 hidden md:table-cell">Started</th>
+                                <th class="text-right px-4 md:px-6 py-4 text-xs md:text-sm font-medium text-dark-400">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="usersTable">
+                        <tbody id="subscriptionsTable">
                             <tr>
-                                <td colspan="6" class="px-6 py-12 text-center text-dark-500">
+                                <td colspan="5" class="px-6 py-12 text-center text-dark-500">
                                     <svg class="animate-spin h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                                     </svg>
-                                    Loading your users...
+                                    Loading subscriptions...
                                 </td>
                             </tr>
                         </tbody>
@@ -182,209 +209,134 @@
             overlay.classList.toggle('hidden');
         }
         
-        async function loadUsers() {
+        async function loadSubscriptions() {
             try {
-                console.log('[DEBUG] Fetching users from:', `${API_BASE}/api/admin/users`);
-                console.log('[DEBUG] Token exists:', !!token);
-                
-                const res = await fetch(`${API_BASE}/api/admin/users`, {
+                // First, try to get all users and their subscriptions
+                const usersRes = await fetch(`${API_BASE}/api/admin/users`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
-                console.log('[DEBUG] Response status:', res.status);
+                if (usersRes.status === 401) { logout(); return; }
                 
-                if (res.status === 401) { 
-                    console.error('[ERROR] Unauthorized - logging out');
-                    logout(); 
-                    return; 
+                if (!usersRes.ok) {
+                    throw new Error(`API returned ${usersRes.status}`);
                 }
                 
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    console.error('[ERROR] API error:', res.status, errorText);
-                    throw new Error(`API returned ${res.status}: ${errorText}`);
-                }
-                
-                const data = await res.json();
-                console.log('[DEBUG] Users data:', data);
+                const data = await usersRes.json();
                 const users = data.users || [];
                 
-                if (users.length === 0) {
-                    document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-dark-500">No users yet — they\'ll appear here when someone signs up</td></tr>';
+                // Filter users with subscriptions
+                const subscriptions = users.filter(u => u.subscription).map(u => ({
+                    id: u.subscription.id,
+                    userId: u.id,
+                    userEmail: u.email || u.phone || 'No contact',
+                    userName: u.name || 'No name',
+                    plan: u.subscription.plan || 'free',
+                    status: u.subscription.status || 'inactive',
+                    createdAt: u.subscription.createdAt || u.createdAt,
+                    currentPeriodEnd: u.subscription.currentPeriodEnd,
+                    cancelAtPeriodEnd: u.subscription.cancelAtPeriodEnd || false
+                }));
+                
+                // Calculate stats
+                const total = subscriptions.length;
+                const active = subscriptions.filter(s => s.status === 'active').length;
+                const trialing = subscriptions.filter(s => s.status === 'trialing').length;
+                const proCount = subscriptions.filter(s => s.plan === 'pro' && s.status === 'active').length;
+                const mrr = proCount * 49; // $49 per pro subscription
+                
+                document.getElementById('totalSubs').textContent = total;
+                document.getElementById('activeSubs').textContent = active;
+                document.getElementById('trialSubs').textContent = trialing;
+                document.getElementById('mrr').textContent = '$' + mrr;
+                
+                if (subscriptions.length === 0) {
+                    document.getElementById('subscriptionsTable').innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-dark-500">No subscriptions yet — they\'ll appear here when users subscribe</td></tr>';
                     return;
                 }
                 
-                document.getElementById('usersTable').innerHTML = users.map(user => `
+                const statusColors = {
+                    active: 'bg-emerald-500/10 text-emerald-400',
+                    trialing: 'bg-yellow-500/10 text-yellow-400',
+                    canceled: 'bg-red-500/10 text-red-400',
+                    past_due: 'bg-orange-500/10 text-orange-400',
+                    inactive: 'bg-dark-700 text-dark-400'
+                };
+                
+                const planColors = {
+                    pro: 'bg-accent/10 text-accent',
+                    free: 'bg-dark-700 text-dark-400'
+                };
+                
+                document.getElementById('subscriptionsTable').innerHTML = subscriptions.map(sub => `
                     <tr class="border-b border-dark-700/30 hover:bg-dark-800/30 transition">
-                        <td class="px-6 py-4">
+                        <td class="px-4 md:px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-sm font-medium">
-                                    ${(user.name || user.email || '?')[0].toUpperCase()}
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-xs md:text-sm font-medium">
+                                    ${(sub.userName || sub.userEmail)[0].toUpperCase()}
                                 </div>
-                                <div>
-                                    <p class="font-medium">${user.name || 'No name'}</p>
-                                    <p class="text-sm text-dark-500">${user.id.slice(0, 8)}...</p>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-xs md:text-sm truncate">${sub.userName}</p>
+                                    <p class="text-xs text-dark-500 truncate">${sub.userEmail}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <p class="text-sm">${user.email || user.phone || '-'}</p>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm px-2 py-1 rounded-lg ${user.platform === 'whatsapp' ? 'bg-green-500/10 text-green-400' : 'bg-blue-500/10 text-blue-400'}">
-                                ${user.platform || 'unknown'}
+                        <td class="px-4 md:px-6 py-4 hidden md:table-cell">
+                            <span class="text-xs px-2 py-1 rounded-full ${planColors[sub.plan] || planColors.free}">
+                                ${sub.plan}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="text-xs px-2.5 py-1 rounded-full ${user.subscriptionStatus === 'active' ? 'bg-emerald-500/10 text-emerald-400' : user.subscriptionStatus === 'trialing' ? 'bg-yellow-500/10 text-yellow-400' : 'bg-dark-700 text-dark-400'}">
-                                ${user.subscriptionStatus || 'free'}
+                        <td class="px-4 md:px-6 py-4">
+                            <span class="text-xs px-2 py-1 rounded-full ${statusColors[sub.status] || statusColors.inactive}">
+                                ${sub.status}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-sm text-dark-400">
-                            ${new Date(user.createdAt).toLocaleDateString()}
+                        <td class="px-4 md:px-6 py-4 text-xs md:text-sm text-dark-400 hidden md:table-cell">
+                            ${new Date(sub.createdAt).toLocaleDateString()}
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="viewProfile('${user.id}')" class="text-accent hover:text-accent/80 transition text-sm font-medium">
-                                View Profile
+                        <td class="px-4 md:px-6 py-4 text-right">
+                            <button onclick="viewSubscription('${sub.id}')" class="text-accent hover:text-accent/80 transition text-xs md:text-sm font-medium">
+                                View
                             </button>
                         </td>
                     </tr>
                 `).join('');
                 
             } catch (err) {
-                console.error('[FATAL] Load users error:', err);
-                document.getElementById('usersTable').innerHTML = `
-                    <tr><td colspan="6" class="px-6 py-12 text-center">
-                        <div class="text-red-400 mb-2">⚠️ Unable to load users</div>
-                        <div class="text-sm text-dark-400">${err.message}</div>
-                        <div class="text-xs text-dark-500 mt-2">Check browser console (F12) for details</div>
-                        <button onclick="location.reload()" class="btn-primary mt-4">Reload Page</button>
+                console.error('Load subscriptions error:', err);
+                document.getElementById('subscriptionsTable').innerHTML = `
+                    <tr><td colspan="5" class="px-6 py-12 text-center">
+                        <div class="text-red-400 mb-2">⚠️ Unable to load subscriptions</div>
+                        <p class="text-xs text-dark-500">${err.message}</p>
                     </td></tr>
                 `;
+                
+                // Reset stats to error state
+                document.getElementById('totalSubs').textContent = 'Error';
+                document.getElementById('activeSubs').textContent = 'Error';
+                document.getElementById('trialSubs').textContent = 'Error';
+                document.getElementById('mrr').textContent = 'Error';
             }
+        }
+        
+        function viewSubscription(subId) {
+            alert('Subscription details coming soon!\n\nSubscription ID: ' + subId);
+            // TODO: Implement subscription detail modal or page
         }
         
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#usersTable tr');
+            const rows = document.querySelectorAll('#subscriptionsTable tr');
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(query) ? '' : 'none';
             });
         });
         
-        loadUsers();
-        
-        // View user profile
-        async function viewProfile(userId) {
-            try {
-                const res = await fetch(`${API_BASE}/api/profile/${userId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!res.ok) {
-                    alert('Unable to load profile. Please try again.');
-                    return;
-                }
-                
-                const data = await res.json();
-                const profile = data.profile;
-                
-                // Show profile modal
-                showProfileModal(profile);
-                
-            } catch (err) {
-                console.error('Load profile error:', err);
-                alert('Unable to load profile. Please try again.');
-            }
-        }
-        
-        function showProfileModal(profile) {
-            const modal = document.getElementById('profileModal');
-            
-            // Calculate completeness color
-            const completeness = profile.profileCompleteness || 0;
-            let completenessColor = 'text-red-400';
-            if (completeness >= 75) completenessColor = 'text-green-400';
-            else if (completeness >= 50) completenessColor = 'text-yellow-400';
-            
-            // Format birthday
-            const birthday = profile.birthday ? new Date(profile.birthday).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Not set';
-            
-            // Format last update
-            const lastUpdate = profile.lastProfileUpdate ? new Date(profile.lastProfileUpdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never';
-            
-            document.getElementById('profileContent').innerHTML = `
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold">${profile.fullName || profile.name || 'No name set'}</h3>
-                    <div class="text-right">
-                        <p class="text-sm text-dark-400">Profile Completeness</p>
-                        <p class="text-2xl font-bold ${completenessColor}">${completeness}%</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
-                        <p class="text-xs text-dark-400 mb-1">Full Name</p>
-                        <p class="font-medium">${profile.fullName || '-'}</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
-                        <p class="text-xs text-dark-400 mb-1">Preferred Name</p>
-                        <p class="font-medium">${profile.preferredName || '-'}</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
-                        <p class="text-xs text-dark-400 mb-1">📍 Location</p>
-                        <p class="font-medium">${profile.location || '-'}</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
-                        <p class="text-xs text-dark-400 mb-1">🎂 Birthday</p>
-                        <p class="font-medium">${birthday}</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
-                        <p class="text-xs text-dark-400 mb-1">💼 Occupation</p>
-                        <p class="font-medium">${profile.occupation || '-'}</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700">
-                        <p class="text-xs text-dark-400 mb-1">🌍 Timezone</p>
-                        <p class="font-medium">${profile.timezone || '-'}</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-dark-800/50 border border-dark-700 col-span-2">
-                        <p class="text-xs text-dark-400 mb-1">🎯 Interests</p>
-                        <p class="font-medium">${profile.interests && profile.interests.length > 0 ? profile.interests.join(', ') : '-'}</p>
-                    </div>
-                </div>
-                
-                <div class="p-4 rounded-xl bg-accent/5 border border-accent/20 text-sm text-dark-300">
-                    <p class="text-xs text-dark-400 mb-1">ℹ️ Auto-extracted from conversations</p>
-                    <p>Last updated: ${lastUpdate}</p>
-                </div>
-            `;
-            
-            modal.classList.remove('hidden');
-        }
-        
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.add('hidden');
-        }
+        loadSubscriptions();
     </script>
     
-    <!-- Profile Modal -->
-    <div id="profileModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-        <div class="gradient-border glass rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold">User Profile</h2>
-                <button onclick="closeProfileModal()" class="text-dark-400 hover:text-white transition">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="profileContent">
-                Loading...
-            </div>
-        </div>
-    </div>
     <!-- Tab Synchronization -->
     <script src="tab-sync.js"></script>
 </body>
