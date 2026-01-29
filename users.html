@@ -272,7 +272,7 @@
         // View user profile
         async function viewProfile(userId) {
             try {
-                const res = await fetch(`${API_BASE}/api/profile/${userId}`, {
+                const res = await fetch(`${API_BASE}/api/admin/tenants/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -282,7 +282,20 @@
                 }
                 
                 const data = await res.json();
-                const profile = data.profile;
+                
+                // Map API response to profile modal format
+                const profile = {
+                    fullName: data.name || 'No name',
+                    preferredName: data.name || data.email.split('@')[0],
+                    email: data.email,
+                    phone: data.phone || '-',
+                    location: '-',
+                    birthday: null,
+                    telegram: data.telegramChatId ? 'Connected' : 'Not connected',
+                    profileCompleteness: data.emailVerified ? 50 : 25,
+                    lastProfileUpdate: data.updatedAt,
+                    stats: data.stats || {}
+                };
                 
                 // Show profile modal
                 showProfileModal(profile);
