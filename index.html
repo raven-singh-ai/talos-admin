@@ -25,6 +25,9 @@
     <!-- Tailwind CSS (compiled) -->
     <link rel="stylesheet" href="styles.css">
     
+    <!-- Unified Button System -->
+    <link rel="stylesheet" href="button-system.css">
+    
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0d0d0f; }
@@ -108,7 +111,7 @@
                 <button 
                     type="submit"
                     id="submitBtn"
-                    class="w-full py-3.5 px-6 rounded-xl bg-accent hover:bg-accent-dark text-white font-semibold transition-all"
+                    class="btn-primary btn-full btn-lg"
                 >
                     Sign In
                 </button>
@@ -202,5 +205,8 @@
             window.location.href = '/dashboard.html';
         }
     </script>
+    
+    <!-- Tab Synchronization -->
+    <script src="tab-sync.js"></script>
 </body>
 </html>
