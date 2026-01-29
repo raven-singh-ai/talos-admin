@@ -339,15 +339,23 @@
                 document.getElementById('mrr').textContent = '$' + (data.mrr || 0);
                 
                 // Load recent users
+                console.log('[DEBUG] Fetching users from:', `${API_BASE}/api/admin/users`);
+                console.log('[DEBUG] Token exists:', !!token);
+                
                 const usersRes = await fetch(`${API_BASE}/api/admin/users`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
+                console.log('[DEBUG] Users response status:', usersRes.status);
+                
                 if (!usersRes.ok) {
-                    throw new Error(`API returned ${usersRes.status}`);
+                    const errorText = await usersRes.text();
+                    console.error('[ERROR] Users API error:', usersRes.status, errorText);
+                    throw new Error(`API returned ${usersRes.status}: ${errorText.substring(0, 100)}`);
                 }
                 
                 const usersData = await usersRes.json();
+                console.log('[DEBUG] Users data:', usersData);
                 const users = (usersData.users || []).slice(0, 5);
                 
                 const usersHtml = users.map(user => `

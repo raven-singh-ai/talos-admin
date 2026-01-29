@@ -180,13 +180,29 @@
         
         async function loadUsers() {
             try {
+                console.log('[DEBUG] Fetching users from:', `${API_BASE}/api/admin/users`);
+                console.log('[DEBUG] Token exists:', !!token);
+                
                 const res = await fetch(`${API_BASE}/api/admin/users`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
-                if (res.status === 401) { logout(); return; }
+                console.log('[DEBUG] Response status:', res.status);
+                
+                if (res.status === 401) { 
+                    console.error('[ERROR] Unauthorized - logging out');
+                    logout(); 
+                    return; 
+                }
+                
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error('[ERROR] API error:', res.status, errorText);
+                    throw new Error(`API returned ${res.status}: ${errorText}`);
+                }
                 
                 const data = await res.json();
+                console.log('[DEBUG] Users data:', data);
                 const users = data.users || [];
                 
                 if (users.length === 0) {
@@ -232,8 +248,15 @@
                 `).join('');
                 
             } catch (err) {
-                console.error('Load users error:', err);
-                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-red-400">Unable to load users. Please refresh the page.</td></tr>';
+                console.error('[FATAL] Load users error:', err);
+                document.getElementById('usersTable').innerHTML = `
+                    <tr><td colspan="6" class="px-6 py-12 text-center">
+                        <div class="text-red-400 mb-2">⚠️ Unable to load users</div>
+                        <div class="text-sm text-dark-400">${err.message}</div>
+                        <div class="text-xs text-dark-500 mt-2">Check browser console (F12) for details</div>
+                        <button onclick="location.reload()" class="btn-primary mt-4">Reload Page</button>
+                    </td></tr>
+                `;
             }
         }
         
