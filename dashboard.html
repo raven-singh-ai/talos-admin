@@ -119,19 +119,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Help Section -->
-            <div class="mt-4 p-4 rounded-xl bg-accent/10 border border-accent/20">
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-accent mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div>
-                        <p class="text-sm font-medium mb-1">Need Help?</p>
-                        <a href="mailto:support@talospro.ai" class="text-xs text-dark-400 hover:text-accent transition">support@talospro.ai</a>
-                    </div>
-                </div>
-            </div>
         </aside>
         
         <!-- Overlay for mobile -->
@@ -334,12 +321,15 @@
         
         async function loadDashboard() {
             try {
-                window.perfMonitor.start('dashboard');
+                if (window.perfMonitor) window.perfMonitor.start('dashboard');
                 
-                // Use cached fetch for stats (cache for 30 seconds)
-                const data = await window.dedupeFetch(`${API_BASE}/api/admin/stats`, {
+                // Use cached fetch for stats (cache for 30 seconds) - fallback to regular fetch
+                const fetchFn = window.dedupeFetch || fetch;
+                const response = await fetchFn(`${API_BASE}/api/admin/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }, 30 * 1000);
+                
+                const data = window.dedupeFetch ? response : await response.json();
                 
                 // Update stats with data attributes for animated counters
                 const totalUsersEl = document.getElementById('totalUsers');
@@ -397,7 +387,7 @@
                     </div>
                 `;
                 
-                window.perfMonitor.end('dashboard');
+                if (window.perfMonitor) window.perfMonitor.end('dashboard');
                 
             } catch (err) {
                 console.error('Dashboard load error:', err);
