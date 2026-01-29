@@ -28,25 +28,7 @@
     <link rel="stylesheet" href="button-system.css">
     
     <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0d0d0f; }
-        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
-        
-        .mesh-gradient {
-            background: 
-                radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
-                radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
-                #0d0d0f;
-        }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
+        /* Login page specific styles */
         .input-glow:focus {
             border-color: rgba(124, 58, 237, 0.5);
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), 0 0 20px rgba(124, 58, 237, 0.1);
@@ -55,6 +37,13 @@
         .btn-loading {
             pointer-events: none;
             opacity: 0.7;
+        }
+        
+        .glass-heavy {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
     </style>
 </head>
@@ -73,7 +62,7 @@
         </div>
         
         <!-- Login Form -->
-        <div class="glass rounded-2xl p-8">
+        <div class="glass-heavy rounded-2xl p-8">
             <form id="loginForm" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-dark-300 mb-2">Email</label>
@@ -202,5 +191,6 @@
     
     <!-- Tab Synchronization -->
     <script src="tab-sync.js"></script>
+    <script src="modern-ui.js"></script>
 </body>
 </html>

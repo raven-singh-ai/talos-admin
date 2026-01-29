@@ -16,35 +16,7 @@
     <!-- Unified Button System -->
     <link rel="stylesheet" href="button-system.css">
     
-    <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0d0d0f; }
-        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
-        
-        .mesh-gradient {
-            background: radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), #0d0d0f;
-        }
-        
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        
-        .gradient-border { position: relative; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); }
-        .gradient-border::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-        
-        .sidebar-link { transition: all 0.2s ease; }
-        .sidebar-link:hover, .sidebar-link.active { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); }
-        .sidebar-link.active { color: #a78bfa; }
-        
-        .input-glow:focus { border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
-        
-        /* Mobile menu */
-        .mobile-menu { transform: translateX(-100%); transition: transform 0.3s ease; }
-        .mobile-menu.open { transform: translateX(0); }
-        
-        @media (min-width: 768px) {
-            .mobile-menu-btn { display: none; }
-            #sidebar { transform: translateX(0) !important; display: block !important; }
-        }
-    </style>
+    <!-- ✨ Modern design styles now in compiled styles.css -->
 </head>
 <body class="mesh-gradient min-h-screen font-sans text-white antialiased">
     
@@ -444,5 +416,6 @@
     </div>
     <!-- Tab Synchronization -->
     <script src="tab-sync.js"></script>
+    <script src="modern-ui.js"></script>
 </body>
 </html>

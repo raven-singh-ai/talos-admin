@@ -1,3 +1,472 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ========================================
+   🎨 MODERN DESIGN SYSTEM - TALOSPRO ADMIN
+   ======================================== */
+
+@layer base {
+  :root {
+    /* Enhanced Color Palette */
+    --primary-500: #7c3aed;
+    --primary-600: #6d28d9;
+    --primary-700: #5b21b6;
+    
+    --accent-500: #60a5fa;
+    --accent-600: #3b82f6;
+    
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    
+    --glass-bg: rgba(26, 26, 31, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Modern Typography */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #0d0d0f;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #7c3aed 0%, #6d28d9 100%);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
+  }
+}
+
+@layer components {
+  /* =====================================
+     1. NAVIGATION / SIDEBAR - MODERNIZED
+     ===================================== */
+  
+  .sidebar-link {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+  
+  /* Active indicator bar */
+  .sidebar-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 0;
+    background: linear-gradient(to bottom, #a78bfa, #7c3aed);
+    border-radius: 0 4px 4px 0;
+    transition: height 0.3s ease;
+    z-index: 1;
+  }
+  
+  .sidebar-link.active::before {
+    height: 60%;
+  }
+  
+  /* Icon background glow */
+  .sidebar-link svg {
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar-link:hover {
+    transform: translateX(4px);
+    background: rgba(124, 58, 237, 0.15);
+    border-color: rgba(167, 139, 250, 0.3);
+  }
+  
+  .sidebar-link.active {
+    background: rgba(124, 58, 237, 0.12);
+    border-color: rgba(167, 139, 250, 0.25);
+    box-shadow: 
+      0 0 20px rgba(124, 58, 237, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .sidebar-link:hover svg,
+  .sidebar-link.active svg {
+    filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.6));
+    transform: scale(1.1);
+  }
+  
+  /* =====================================
+     2. CARDS & PANELS - MODERNIZED
+     ===================================== */
+  
+  .card, .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(26, 26, 31, 0.9) 0%,
+      rgba(17, 17, 22, 0.95) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover, .card-hover:hover {
+    border-color: rgba(167, 139, 250, 0.3);
+    box-shadow: 
+      0 12px 48px rgba(124, 58, 237, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  /* Stats cards with gradient accents */
+  .stat-card {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(
+      circle at center,
+      rgba(124, 58, 237, 0.15) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  
+  /* =====================================
+     3. BUTTONS - MODERNIZED
+     ===================================== */
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  /* Ghost button upgrade */
+  .btn-ghost {
+    background: rgba(124, 58, 237, 0.05);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-ghost:hover {
+    background: rgba(124, 58, 237, 0.15);
+    border-color: rgba(167, 139, 250, 0.4);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  }
+  
+  /* =====================================
+     4. TABLES - MODERNIZED
+     ===================================== */
+  
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  table thead th {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(32, 33, 35, 0.95) 0%,
+      rgba(32, 33, 35, 0.9) 100%
+    );
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+  }
+  
+  table tbody tr {
+    transition: all 0.2s ease;
+  }
+  
+  table tbody tr:nth-child(even) {
+    background: linear-gradient(
+      90deg,
+      rgba(124, 58, 237, 0.03) 0%,
+      rgba(124, 58, 237, 0.01) 100%
+    );
+  }
+  
+  table tbody tr:hover {
+    background: linear-gradient(
+      90deg,
+      rgba(124, 58, 237, 0.1) 0%,
+      rgba(124, 58, 237, 0.05) 100%
+    );
+    box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.2);
+    transform: scale(1.005);
+  }
+  
+  /* =====================================
+     5. GRADIENTS & EFFECTS
+     ===================================== */
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .gradient-border {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #a78bfa, #60a5fa);
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  
+  .mesh-gradient {
+    background: 
+      radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
+      #0d0d0f;
+  }
+  
+  /* =====================================
+     6. ANIMATIONS
+     ===================================== */
+  
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.8);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.6);
+    }
+  }
+  
+  .status-online::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+  
+  /* Counter animation */
+  @keyframes countUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-count {
+    animation: countUp 0.6s ease-out;
+  }
+  
+  /* =====================================
+     7. MOBILE OPTIMIZATIONS
+     ===================================== */
+  
+  .mobile-menu {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .mobile-menu.open {
+    transform: translateX(0);
+  }
+  
+  @media (min-width: 768px) {
+    .mobile-menu-btn {
+      display: none;
+    }
+    
+    #sidebar {
+      transform: translateX(0) !important;
+      display: block !important;
+    }
+  }
+  
+  /* =====================================
+     8. LOADING & SKELETON STATES
+     ===================================== */
+  
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(52, 53, 65, 0.4) 0%,
+      rgba(64, 65, 79, 0.6) 50%,
+      rgba(52, 53, 65, 0.4) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+  }
+  
+  .loading-spinner {
+    border: 3px solid rgba(124, 58, 237, 0.2);
+    border-top-color: #7c3aed;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* =====================================
+     9. UTILITY CLASSES
+     ===================================== */
+  
+  .text-shadow {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer utilities {
+  /* Responsive text gradients */
+  .gradient-purple-blue {
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Glass morphism variants */
+  .glass-heavy {
+    background: rgba(26, 26, 31, 0.95);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  .glass-light {
+    background: rgba(26, 26, 31, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}

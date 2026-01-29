@@ -16,34 +16,7 @@
     <!-- Unified Button System -->
     <link rel="stylesheet" href="button-system.css">
     
-    <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0d0d0f; }
-        ::-webkit-scrollbar-thumb { background: #343541; border-radius: 4px; }
-        
-        .mesh-gradient { background: radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), #0d0d0f; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.15); }
-        .sidebar-link { transition: all 0.2s ease; }
-        .sidebar-link:hover, .sidebar-link.active { background: rgba(124, 58, 237, 0.1); border-color: rgba(124, 58, 237, 0.3); }
-        .sidebar-link.active { color: #a78bfa; }
-        
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-        .status-online::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: #10b981; animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        
-        /* Mobile menu */
-        .mobile-menu { transform: translateX(-100%); transition: transform 0.3s ease; }
-        .mobile-menu.open { transform: translateX(0); }
-        
-        @media (min-width: 768px) {
-            .mobile-menu-btn { display: none; }
-            #sidebar { transform: translateX(0) !important; display: block !important; }
-        }
-    </style>
+    <!-- ✨ Modern design styles now in compiled styles.css -->
 </head>
 <body class="mesh-gradient min-h-screen font-sans text-white antialiased">
     
@@ -177,7 +150,7 @@
                 <!-- Stats Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 mb-6 md:mb-8">
                     
-                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover">
+                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover stat-card">
                         <div class="flex items-center justify-between mb-3 md:mb-4">
                             <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-accent/10 flex items-center justify-center">
                                 <svg class="w-5 h-5 md:w-6 md:h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -192,7 +165,7 @@
                         <p class="text-dark-400 text-xs md:text-sm">Total Users</p>
                     </div>
                     
-                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover">
+                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover stat-card">
                         <div class="flex items-center justify-between mb-3 md:mb-4">
                             <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-emerald-500/10 flex items-center justify-center">
                                 <svg class="w-5 h-5 md:w-6 md:h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -207,7 +180,7 @@
                         <p class="text-dark-400 text-xs md:text-sm">Active Users</p>
                     </div>
                     
-                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover">
+                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover stat-card">
                         <div class="flex items-center justify-between mb-3 md:mb-4">
                             <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-blue-500/10 flex items-center justify-center">
                                 <svg class="w-5 h-5 md:w-6 md:h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -222,7 +195,7 @@
                         <p class="text-dark-400 text-xs md:text-sm">Messages</p>
                     </div>
                     
-                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover">
+                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover stat-card">
                         <div class="flex items-center justify-between mb-3 md:mb-4">
                             <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-yellow-500/10 flex items-center justify-center">
                                 <svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -238,7 +211,7 @@
                     </div>
                     
                     <!-- NEW: Average Cost per User -->
-                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover">
+                    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 card-hover stat-card">
                         <div class="flex items-center justify-between mb-3 md:mb-4">
                             <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-orange-500/10 flex items-center justify-center">
                                 <span class="text-2xl">💰</span>
@@ -455,5 +428,6 @@
     
     <!-- Tab Synchronization -->
     <script src="tab-sync.js"></script>
+    <script src="modern-ui.js"></script>
 </body>
 </html>
