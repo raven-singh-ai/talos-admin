@@ -337,14 +337,14 @@
                 const data = await res.json();
                 
                 // Update stats
-                document.getElementById('totalUsers').textContent = data.totalUsers || 0;
-                document.getElementById('activeUsers').textContent = data.activeUsers || 0;
-                document.getElementById('messagesCount').textContent = data.totalMessages || 0;
-                document.getElementById('mrr').textContent = '$' + (data.mrr || 0);
+                document.getElementById('totalUsers').textContent = data.users?.total || 0;
+                document.getElementById('activeUsers').textContent = data.users?.activeLastWeek || 0;
+                document.getElementById('messagesCount').textContent = data.messages?.total || 0;
+                document.getElementById('mrr').textContent = '$' + (data.revenue?.estimatedMRR || 0);
                 
                 // Load recent users
                 
-                const usersRes = await fetch(`${API_BASE}/api/admin/users`, {
+                const usersRes = await fetch(`${API_BASE}/api/admin/tenants?limit=5`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -355,7 +355,7 @@
                 }
                 
                 const usersData = await usersRes.json();
-                const users = (usersData.users || []).slice(0, 5);
+                const users = (usersData.tenants || []).slice(0, 5);
                 
                 const usersHtml = users.map(user => `
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-dark-800/50 transition">
