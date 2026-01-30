@@ -203,6 +203,24 @@
                     </div>
                 </div>
 
+                <!-- Batch Actions Bar -->
+                <div id="batchActionsBar" class="glass rounded-2xl p-4 mb-4 hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-dark-400">
+                            <span id="selectedCount">0</span> selected
+                        </span>
+                        <div class="flex gap-2">
+                            <button onclick="clearSelection()" class="btn-ghost btn-sm">Clear</button>
+                            <button onclick="batchInvite()" class="btn-primary btn-sm">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                Batch Invite
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Waitlist Table -->
                 <div class="glass rounded-2xl p-4 md:p-6 overflow-x-auto">
                     <h2 class="text-xl font-bold mb-4">All Waitlist Entries</h2>
@@ -210,6 +228,10 @@
                         <table class="w-full min-w-[600px]">
                             <thead>
                                 <tr class="border-b border-dark-700">
+                                    <th class="text-left py-3 px-4 text-dark-400 font-medium w-12">
+                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" 
+                                               class="w-4 h-4 rounded border-dark-600 bg-dark-800 text-purple-500 focus:ring-purple-500">
+                                    </th>
                                     <th class="text-left py-3 px-4 text-dark-400 font-medium">Email</th>
                                     <th class="text-left py-3 px-4 text-dark-400 font-medium">Phone</th>
                                     <th class="text-left py-3 px-4 text-dark-400 font-medium">Status</th>
@@ -219,7 +241,7 @@
                             </thead>
                             <tbody id="waitlistTable">
                                 <tr>
-                                    <td colspan="5" class="text-center py-8 text-dark-400">Loading...</td>
+                                    <td colspan="6" class="text-center py-8 text-dark-400">Loading...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -233,6 +255,7 @@
     <script>
         const API_BASE = 'https://talos-backend.vercel.app/api';
         let allEntries = [];
+        let selectedEmails = new Set();
 
         // Auth check
         const token = localStorage.getItem('adminToken');
@@ -254,6 +277,76 @@
         // Mobile menu toggle
         function toggleMobileMenu() {
             document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Selection functions
+        function toggleSelection(email) {
+            if (selectedEmails.has(email)) {
+                selectedEmails.delete(email);
+            } else {
+                selectedEmails.add(email);
+            }
+            updateBatchActionsBar();
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const currentEntries = getCurrentFilteredEntries();
+            
+            if (selectAll.checked) {
+                // Select all pending entries only
+                currentEntries
+                    .filter(e => !e.accountCreated)
+                    .forEach(e => selectedEmails.add(e.email));
+            } else {
+                selectedEmails.clear();
+            }
+            updateBatchActionsBar();
+            renderWaitlist(currentEntries);
+        }
+
+        function clearSelection() {
+            selectedEmails.clear();
+            document.getElementById('selectAll').checked = false;
+            updateBatchActionsBar();
+            const currentEntries = getCurrentFilteredEntries();
+            renderWaitlist(currentEntries);
+        }
+
+        function updateBatchActionsBar() {
+            const bar = document.getElementById('batchActionsBar');
+            const count = document.getElementById('selectedCount');
+            
+            count.textContent = selectedEmails.size;
+            
+            if (selectedEmails.size > 0) {
+                bar.classList.remove('hidden');
+            } else {
+                bar.classList.add('hidden');
+            }
+        }
+
+        function getCurrentFilteredEntries() {
+            const status = document.getElementById('statusFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = allEntries;
+            
+            if (status) {
+                filtered = filtered.filter(e => {
+                    if (status === 'account_created') return e.accountCreated;
+                    return e.status === status;
+                });
+            }
+            
+            if (search) {
+                filtered = filtered.filter(e => 
+                    e.email.toLowerCase().includes(search) ||
+                    (e.phone || '').toLowerCase().includes(search)
+                );
+            }
+            
+            return filtered;
         }
 
         // Load waitlist
@@ -292,12 +385,21 @@
             const tbody = document.getElementById('waitlistTable');
             
             if (!entries || entries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-dark-400">No entries found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-dark-400">No entries found</td></tr>';
                 return;
             }
 
             tbody.innerHTML = entries.map((entry, index) => `
                 <tr class="border-b border-dark-700/50 hover:bg-dark-800/30">
+                    <td class="py-3 px-4">
+                        ${!entry.accountCreated ? 
+                            `<input type="checkbox" 
+                                   ${selectedEmails.has(entry.email) ? 'checked' : ''} 
+                                   onchange="toggleSelection('${entry.email}')" 
+                                   class="w-4 h-4 rounded border-dark-600 bg-dark-800 text-purple-500 focus:ring-purple-500">` :
+                            `<span class="text-dark-600">✓</span>`
+                        }
+                    </td>
                     <td class="py-3 px-4">
                         <div class="font-medium">${entry.email}</div>
                         <div class="text-xs text-dark-400">#${index + 1}</div>
@@ -349,27 +451,60 @@
             }
         }
 
+        // Batch invite
+        async function batchInvite() {
+            if (selectedEmails.size === 0) {
+                alert('Please select users to invite');
+                return;
+            }
+            
+            const count = selectedEmails.size;
+            if (!confirm(`Send invites to ${count} user${count > 1 ? 's' : ''}?\n\nThis will create accounts and send credentials via email/WhatsApp.`)) {
+                return;
+            }
+            
+            const emails = Array.from(selectedEmails);
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Inviting...';
+            
+            try {
+                const res = await fetch(`${API_BASE}/admin/waitlist/batch-invite`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ emails })
+                });
+                const data = await res.json();
+                
+                if (data.success || data.results) {
+                    const results = data.results || [];
+                    const succeeded = results.filter(r => r.success).length;
+                    const failed = results.filter(r => !r.success).length;
+                    
+                    alert(`✅ Batch invite complete!\n\nSuccessful: ${succeeded}\nFailed: ${failed}\n\nCredentials have been sent to users via email/WhatsApp.`);
+                    
+                    selectedEmails.clear();
+                    updateBatchActionsBar();
+                    loadWaitlist();
+                } else {
+                    alert('Failed: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Batch invite failed:', error);
+                alert('Failed to send batch invites. Check console for details.');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
         // Filter waitlist
         function filterWaitlist() {
-            const status = document.getElementById('statusFilter').value;
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            
-            let filtered = allEntries;
-            
-            if (status) {
-                filtered = filtered.filter(e => {
-                    if (status === 'account_created') return e.accountCreated;
-                    return e.status === status;
-                });
-            }
-            
-            if (search) {
-                filtered = filtered.filter(e => 
-                    e.email.toLowerCase().includes(search) ||
-                    (e.phone || '').toLowerCase().includes(search)
-                );
-            }
-            
+            const filtered = getCurrentFilteredEntries();
             renderWaitlist(filtered);
         }
 
