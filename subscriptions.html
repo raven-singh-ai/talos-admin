@@ -261,7 +261,7 @@
                 };
                 
                 document.getElementById('subscriptionsTable').innerHTML = subscriptions.map(sub => `
-                    <tr class="border-b border-dark-700/30 hover:bg-dark-800/30 transition">
+                    <tr class="border-b border-dark-700/30 hover:bg-dark-800/30 transition cursor-pointer" onclick="viewSubscription('${sub.id}')">
                         <td class="px-4 md:px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-xs md:text-sm font-medium">
@@ -287,7 +287,7 @@
                             ${new Date(sub.createdAt).toLocaleDateString()}
                         </td>
                         <td class="px-4 md:px-6 py-4 text-right">
-                            <button onclick="viewSubscription('${sub.id}')" class="text-accent hover:text-accent/80 transition text-xs md:text-sm font-medium">
+                            <button onclick="event.stopPropagation(); viewSubscription('${sub.id}')" class="text-accent hover:text-accent/80 transition text-xs md:text-sm font-medium">
                                 View
                             </button>
                         </td>
