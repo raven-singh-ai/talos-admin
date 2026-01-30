@@ -1,13 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 60">
   <defs>
-    <!-- Main gradient: purple to orange -->
-    <linearGradient id="colorGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="crystalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#8B5CF6"/>
       <stop offset="50%" stop-color="#A855F7"/>
       <stop offset="100%" stop-color="#F97316"/>
     </linearGradient>
-    
-    <!-- Text gradient -->
     <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#A78BFA"/>
       <stop offset="50%" stop-color="#C084FC"/>
@@ -15,57 +12,16 @@
     </linearGradient>
   </defs>
   
-  <!-- Crystal icon (left side, scaled down) -->
-  <g transform="translate(10, 20) scale(0.6)">
-    <!-- Left face -->
-    <polygon 
-      points="50,8 20,40 30,85 50,55" 
-      fill="url(#colorGradient)"
-      opacity="0.95"/>
-    
-    <!-- Right face -->
-    <polygon 
-      points="50,8 80,40 70,85 50,55" 
-      fill="url(#colorGradient)"
-      opacity="0.85"/>
-    
-    <!-- Top face -->
-    <polygon 
-      points="20,40 50,8 80,40 50,25" 
-      fill="url(#colorGradient)"
-      opacity="1"/>
-    
-    <!-- Bottom face -->
-    <polygon 
-      points="30,85 50,55 70,85 50,95" 
-      fill="url(#colorGradient)"
-      opacity="0.7"/>
+  <!-- Crystal Icon -->
+  <g transform="translate(5, 10) scale(0.35)">
+    <polygon points="50,8 20,40 30,85 50,55" fill="url(#crystalGradient)" opacity="0.95"/>
+    <polygon points="50,8 80,40 70,85 50,55" fill="url(#crystalGradient)" opacity="0.85"/>
+    <polygon points="20,40 50,8 80,40 50,25" fill="url(#crystalGradient)" opacity="1"/>
+    <polygon points="30,85 50,55 70,85 50,95" fill="url(#crystalGradient)" opacity="0.7"/>
   </g>
   
-  <!-- Text: "TalosPro" -->
-  <g transform="translate(90, 50)">
-    <!-- T -->
-    <path d="M 0,5 L 20,5 M 10,5 L 10,40" stroke="url(#textGradient)" stroke-width="5" stroke-linecap="round" fill="none"/>
-    
-    <!-- a -->
-    <path d="M 30,20 Q 30,15 35,15 Q 40,15 40,20 L 40,40 M 40,27 Q 40,22 35,22 Q 30,22 30,27" stroke="url(#textGradient)" stroke-width="4" stroke-linecap="round" fill="none"/>
-    
-    <!-- l -->
-    <line x1="50" y1="5" x2="50" y2="40" stroke="url(#textGradient)" stroke-width="4" stroke-linecap="round"/>
-    
-    <!-- o -->
-    <circle cx="65" cy="27.5" r="8" stroke="url(#textGradient)" stroke-width="4" fill="none"/>
-    
-    <!-- s -->
-    <path d="M 85,20 Q 85,15 80,15 Q 75,15 75,20 Q 75,23 80,25 Q 85,27 85,30 Q 85,35 80,35 Q 75,35 75,30" stroke="url(#textGradient)" stroke-width="4" stroke-linecap="round" fill="none"/>
-    
-    <!-- P -->
-    <path d="M 95,40 L 95,15 Q 95,15 105,15 Q 110,15 110,22 Q 110,29 105,29 L 95,29" stroke="url(#textGradient)" stroke-width="5" stroke-linecap="round" fill="none"/>
-    
-    <!-- r -->
-    <path d="M 120,40 L 120,20 Q 120,15 125,15" stroke="url(#textGradient)" stroke-width="4" stroke-linecap="round" fill="none"/>
-    
-    <!-- o -->
-    <circle cx="140" cy="27.5" r="8" stroke="url(#textGradient)" stroke-width="4" fill="none"/>
-  </g>
+  <!-- Text: TalosPro -->
+  <text x="45" y="40" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="28" font-weight="700" fill="url(#textGradient)">
+    TalosPro
+  </text>
 </svg>
