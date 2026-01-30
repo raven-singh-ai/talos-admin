@@ -288,7 +288,10 @@
         loadUsers();
         
         // View user profile
+        let currentUserId = null; // Store current user ID for delete
+
         async function viewProfile(userId) {
+            currentUserId = userId; // Store for delete function
             const modal = document.getElementById('profileModal');
             const content = document.getElementById('profileContent');
             
@@ -435,6 +438,34 @@
         function closeProfileModal() {
             document.getElementById('profileModal').classList.add('hidden');
         }
+
+        async function deleteUser() {
+            if (!currentUserId) return;
+            
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/users/${currentUserId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('User deleted successfully');
+                    closeProfileModal();
+                    loadUsers(); // Reload the user list
+                } else {
+                    alert('Failed to delete user: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Delete user error:', error);
+                alert('Failed to delete user: ' + error.message);
+            }
+        }
     </script>
     
     <!-- Profile Modal -->
@@ -450,6 +481,14 @@
             </div>
             <div id="profileContent">
                 Loading...
+            </div>
+            <div class="mt-6 pt-6 border-t border-dark-700/30 flex justify-between">
+                <button onclick="deleteUser()" class="px-4 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition font-medium">
+                    Delete User
+                </button>
+                <button onclick="closeProfileModal()" class="px-4 py-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition font-medium">
+                    Close
+                </button>
             </div>
         </div>
     </div>
