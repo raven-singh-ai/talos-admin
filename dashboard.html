@@ -31,8 +31,9 @@
                     </svg>
                 </button>
                 
-                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                    <img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-7" onerror="this.outerHTML='<span class=\'text-xl font-bold\'>TalosPro</span>'" />
+                <a href="dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <img src="logo.svg" alt="TalosPro" class="h-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'" />
+                    <img src="talos-logo-horizontal.svg" alt="TalosPro" class="h-6 hidden sm:block" onerror="this.src='https://talospro.ai/logos-final/talos-logo-horizontal-white.svg'" />
                 </a>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
@@ -354,20 +355,26 @@
                 }, 60 * 1000);
                 const users = (usersData.tenants || []).slice(0, 5);
                 
-                const usersHtml = users.map(user => `
+                const usersHtml = users.map(user => {
+                    // Get display name - prioritize name, fallback to email username, then phone
+                    const displayName = user.name || 
+                                       (user.email ? user.email.split('@')[0] : null) || 
+                                       (user.phone ? `User ${user.phone.slice(-4)}` : 'New User');
+                    
+                    return `
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-dark-800/50 transition cursor-pointer" onclick="window.location.href='users.html'">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-sm font-medium">
-                            ${(user.name || user.email || '?')[0].toUpperCase()}
+                            ${displayName[0].toUpperCase()}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium truncate text-sm">${user.name || user.email?.split('@')[0] || 'Unknown User'}</p>
-                            <p class="text-xs text-dark-400 truncate">${user.email || user.phone || 'No contact'}</p>
+                            <p class="font-medium truncate text-sm">${displayName}</p>
+                            <p class="text-xs text-dark-400 truncate">${user.email || user.phone || 'No contact info'}</p>
                         </div>
                         <span class="text-xs px-2 py-1 rounded-full ${user.subscription?.status === 'active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-dark-700 text-dark-400'}">
                             ${user.subscription?.plan || 'free'}
                         </span>
                     </div>
-                `).join('') || '<p class="text-center text-dark-500 py-4 text-sm">No users found</p>';
+                `}).join('') || '<p class="text-center text-dark-500 py-4 text-sm">No users found</p>';
                 
                 document.getElementById('recentUsers').innerHTML = usersHtml;
                 

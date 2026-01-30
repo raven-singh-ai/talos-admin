@@ -31,8 +31,9 @@
                     </svg>
                 </button>
                 
-                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                    <img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-7" onerror="this.outerHTML='<span class=\'text-xl font-bold\'>TalosPro</span>'" />
+                <a href="dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <img src="logo.svg" alt="TalosPro" class="h-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'" />
+                    <img src="talos-logo-horizontal.svg" alt="TalosPro" class="h-6 hidden sm:block" onerror="this.src='https://talospro.ai/logos-final/talos-logo-horizontal-white.svg'" />
                 </a>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
@@ -200,15 +201,21 @@
                 
                 // Render users with smooth transition
                 tableBody.style.opacity = '0';
-                tableBody.innerHTML = users.map(user => `
+                tableBody.innerHTML = users.map(user => {
+                    // Get display name - prioritize name, fallback to email username, then phone
+                    const displayName = user.name || 
+                                       (user.email ? user.email.split('@')[0] : null) || 
+                                       (user.phone ? `User ${user.phone.slice(-4)}` : 'New User');
+                    
+                    return `
                     <tr class="border-b border-dark-700/30 hover:bg-dark-800/30 transition cursor-pointer" onclick="viewProfile('${user.id}')">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-blue-600 flex items-center justify-center text-sm font-medium">
-                                    ${(user.name || user.email || '?')[0].toUpperCase()}
+                                    ${displayName[0].toUpperCase()}
                                 </div>
                                 <div>
-                                    <p class="font-medium">${user.name || user.email?.split('@')[0] || 'Unknown User'}</p>
+                                    <p class="font-medium">${displayName}</p>
                                     <p class="text-sm text-dark-500">${user.id.slice(0, 8)}...</p>
                                 </div>
                             </div>
@@ -302,13 +309,17 @@
                 if (window.perfMonitor) window.perfMonitor.end('viewProfile');
                 
                 // Map API response to profile modal format
+                const displayName = data.name || 
+                                   (data.email ? data.email.split('@')[0] : null) || 
+                                   (data.phone ? `User ${data.phone.slice(-4)}` : 'New User');
+                
                 const profile = {
-                    fullName: data.name || data.email?.split('@')[0] || 'Unknown User',
-                    preferredName: data.name || data.email?.split('@')[0] || 'User',
-                    email: data.email,
-                    phone: data.phone || '-',
-                    location: '-',
-                    birthday: null,
+                    fullName: displayName,
+                    preferredName: displayName,
+                    email: data.email || 'No email',
+                    phone: data.phone || 'No phone',
+                    location: data.location || 'Not set',
+                    birthday: data.birthday || null,
                     telegram: data.telegramChatId ? 'Connected' : 'Not connected',
                     profileCompleteness: data.emailVerified ? 50 : 25,
                     lastProfileUpdate: data.updatedAt,
