@@ -232,7 +232,7 @@
     </div>
 
     <script>
-        const API_BASE = 'https://talos-backend.vercel.app/api';
+        const API_BASE = 'https://talos-backend.vercel.app';
         let allReferrals = [];
 
         // Auth check
@@ -260,7 +260,7 @@
         // Load referrals stats
         async function loadStats() {
             try {
-                const res = await fetch(`${API_BASE}/admin/referrals/stats`, {
+                const res = await fetch(`${API_BASE}/api/admin/referrals/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -279,7 +279,7 @@
         // Load referrals list
         async function loadReferrals() {
             try {
-                const res = await fetch(`${API_BASE}/admin/referrals`, {
+                const res = await fetch(`${API_BASE}/api/admin/referrals`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -338,7 +338,7 @@
             if (!confirm('Approve this referral and send reward?')) return;
             
             try {
-                const res = await fetch(`${API_BASE}/admin/referrals/${id}/approve`, {
+                const res = await fetch(`${API_BASE}/api/admin/referrals/${id}/approve`, {
                     method: 'PUT',
                     headers: { 
                         'Authorization': `Bearer ${token}`,

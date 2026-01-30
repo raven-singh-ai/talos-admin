@@ -222,7 +222,7 @@
     </div>
 
     <script>
-        const API_BASE = 'https://talos-backend.vercel.app/api';
+        const API_BASE = 'https://talos-backend.vercel.app';
         let revenueChart = null;
 
         // Auth check
@@ -250,7 +250,7 @@
         // Load revenue stats
         async function loadRevenueStats() {
             try {
-                const res = await fetch(`${API_BASE}/admin/revenue/stats`, {
+                const res = await fetch(`${API_BASE}/api/admin/revenue/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -322,7 +322,7 @@
         // Load subscriptions
         async function loadSubscriptions() {
             try {
-                const res = await fetch(`${API_BASE}/admin/users?limit=100`, {
+                const res = await fetch(`${API_BASE}/api/admin/users?limit=100`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
