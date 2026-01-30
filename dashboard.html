@@ -323,13 +323,16 @@
             try {
                 if (window.perfMonitor) window.perfMonitor.start('dashboard');
                 
-                // Use cached fetch for stats (cache for 30 seconds) - fallback to regular fetch
-                const fetchFn = window.dedupeFetch || fetch;
-                const response = await fetchFn(`${API_BASE}/api/admin/stats`, {
+                // Fetch stats from API
+                const response = await fetch(`${API_BASE}/api/admin/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                }, 30 * 1000);
+                });
                 
-                const data = window.dedupeFetch ? response : await response.json();
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
                 
                 // Update stats with data attributes for animated counters
                 const totalUsersEl = document.getElementById('totalUsers');
@@ -349,10 +352,16 @@
                 document.getElementById('mrr').textContent = '$' + (data.revenue?.estimatedMRR || 0);
                 document.getElementById('avgCost').textContent = '$' + (data.costs?.averageCostPerUser || 0).toFixed(2);
                 
-                // Load recent users (cached for 1 minute)
-                const usersData = await window.dedupeFetch(`${API_BASE}/api/admin/tenants?limit=5`, {
+                // Load recent users
+                const usersResponse = await fetch(`${API_BASE}/api/admin/tenants?limit=5`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                }, 60 * 1000);
+                });
+                
+                if (!usersResponse.ok) {
+                    throw new Error(`Users API error: ${usersResponse.status}`);
+                }
+                
+                const usersData = await usersResponse.json();
                 const users = (usersData.tenants || []).slice(0, 5);
                 
                 const usersHtml = users.map(user => {
