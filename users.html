@@ -31,9 +31,8 @@
                     </svg>
                 </button>
                 
-                <a href="dashboard.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                    <img src="logo.svg" alt="TalosPro" class="h-8 w-8" onerror="this.src='https://talospro.ai/logos-final/talos-crystal-gradient.svg'">
-                    <span class="hidden sm:inline-block"><img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-6" /></span>
+                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    <img src="https://talospro.ai/logos-final/talos-logo-horizontal-white.svg" alt="TalosPro" class="h-7" onerror="this.outerHTML='<span class=\'text-xl font-bold\'>TalosPro</span>'" />
                 </a>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
@@ -125,7 +124,7 @@
                             <tr class="border-b border-dark-700/50">
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">User</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Contact</th>
-                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Platform</th>
+                                <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Type</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Status</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Cost</th>
                                 <th class="text-left px-6 py-4 text-sm font-medium text-dark-400">Joined</th>
@@ -209,7 +208,7 @@
                                     ${(user.name || user.email || '?')[0].toUpperCase()}
                                 </div>
                                 <div>
-                                    <p class="font-medium">${user.name || 'No name'}</p>
+                                    <p class="font-medium">${user.name || user.email?.split('@')[0] || 'Unknown User'}</p>
                                     <p class="text-sm text-dark-500">${user.id.slice(0, 8)}...</p>
                                 </div>
                             </div>
@@ -218,8 +217,8 @@
                             <p class="text-sm">${user.email || user.phone || '-'}</p>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-sm px-2 py-1 rounded-lg ${user.platform === 'whatsapp' ? 'bg-green-500/10 text-green-400' : 'bg-blue-500/10 text-blue-400'}">
-                                ${user.platform || 'unknown'}
+                            <span class="text-sm px-2 py-1 rounded-lg ${user.phone ? 'bg-green-500/10 text-green-400' : 'bg-blue-500/10 text-blue-400'}">
+                                ${user.phone ? 'WhatsApp' : 'Email'}
                             </span>
                         </td>
                         <td class="px-6 py-4">
@@ -304,8 +303,8 @@
                 
                 // Map API response to profile modal format
                 const profile = {
-                    fullName: data.name || 'No name',
-                    preferredName: data.name || data.email.split('@')[0],
+                    fullName: data.name || data.email?.split('@')[0] || 'Unknown User',
+                    preferredName: data.name || data.email?.split('@')[0] || 'User',
                     email: data.email,
                     phone: data.phone || '-',
                     location: '-',
