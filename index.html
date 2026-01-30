@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="button-system.css">
     
     <style>
-        /* Login page specific styles */
+        /* Login page specific styles - match dashboard boxes */
         .input-glow:focus {
             border-color: rgba(124, 58, 237, 0.5);
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1), 0 0 20px rgba(124, 58, 237, 0.1);
@@ -39,11 +39,21 @@
             opacity: 0.7;
         }
         
-        .glass-heavy {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        /* Match dashboard card styling exactly */
+        .login-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        
+        .mesh-gradient { 
+            background: radial-gradient(at 40% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%), 
+                        radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), 
+                        radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), 
+                        #0d0d0f; 
         }
     </style>
 </head>
@@ -62,7 +72,7 @@
         </div>
         
         <!-- Login Form -->
-        <div class="glass-heavy rounded-2xl p-8">
+        <div class="login-card">
             <form id="loginForm" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-dark-300 mb-2">Email</label>
