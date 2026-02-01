@@ -311,10 +311,6 @@
             }
         }
         
-        function viewSubscription(subId) {
-            alert('Subscription details coming soon!\n\nSubscription ID: ' + subId);
-            // TODO: Implement subscription detail modal or page
-        }
         
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -333,5 +329,213 @@
     <script src="tab-sync.js"></script>
     <script src="performance-optimizer.js"></script>
     <script src="modern-ui.js"></script>
+    <!-- Subscription Detail Modal -->
+    <div id="subscriptionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onclick="closeSubscriptionModal()">
+        <div class="gradient-border glass rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold">Subscription Details</h2>
+                <button onclick="closeSubscriptionModal()" class="text-dark-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="subscriptionContent" class="space-y-6">
+                <!-- Loading state -->
+                <div class="text-center py-12 text-dark-400">
+                    Loading subscription details...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSubscription = null;
+        
+        async function viewSubscription(subId) {
+            document.getElementById('subscriptionModal').classList.remove('hidden');
+            document.getElementById('subscriptionContent').innerHTML = '<div class="text-center py-12 text-dark-400">Loading...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/subscriptions/${subId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.subscription) {
+                    currentSubscription = data.subscription;
+                    renderSubscriptionDetails(data.subscription);
+                } else {
+                    document.getElementById('subscriptionContent').innerHTML = '<div class="text-center py-12 text-red-400">Failed to load subscription</div>';
+                }
+            } catch (error) {
+                console.error('Failed to load subscription:', error);
+                document.getElementById('subscriptionContent').innerHTML = '<div class="text-center py-12 text-red-400">Error loading subscription</div>';
+            }
+        }
+        
+        function renderSubscriptionDetails(sub) {
+            const content = `
+                <!-- User Info -->
+                <div class="gradient-border glass p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">User Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm text-dark-400">Name</label>
+                            <p class="font-medium">${sub.user?.name || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">Email</label>
+                            <p class="font-medium">${sub.user?.email || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">Phone</label>
+                            <p class="font-medium">${sub.user?.phone || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">User ID</label>
+                            <p class="font-medium text-xs">${sub.userId?.slice(0, 12)}...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subscription Info -->
+                <div class="gradient-border glass p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">Subscription Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Current Plan -->
+                        <div>
+                            <label class="text-sm text-dark-400 mb-2 block">Current Plan</label>
+                            <select id="planSelect" class="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-lg text-white focus:border-accent focus:outline-none transition">
+                                <option value="free" ${sub.plan === 'free' ? 'selected' : ''}>Free Plan ($0/mo)</option>
+                                <option value="basic" ${sub.plan === 'basic' ? 'selected' : ''}>Basic Plan ($29/mo)</option>
+                                <option value="pro" ${sub.plan === 'pro' ? 'selected' : ''}>Pro Plan ($199/mo)</option>
+                                <option value="enterprise" ${sub.plan === 'enterprise' ? 'selected' : ''}>Enterprise ($999/mo)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div>
+                            <label class="text-sm text-dark-400 mb-2 block">Status</label>
+                            <select id="statusSelect" class="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-lg text-white focus:border-accent focus:outline-none transition">
+                                <option value="active" ${sub.status === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="trialing" ${sub.status === 'trialing' ? 'selected' : ''}>Trial</option>
+                                <option value="paused" ${sub.status === 'paused' ? 'selected' : ''}>Paused</option>
+                                <option value="canceled" ${sub.status === 'canceled' ? 'selected' : ''}>Canceled</option>
+                                <option value="past_due" ${sub.status === 'past_due' ? 'selected' : ''}>Past Due</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div>
+                            <label class="text-sm text-dark-400">Start Date</label>
+                            <p class="font-medium">${new Date(sub.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">Next Billing</label>
+                            <p class="font-medium">${sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : 'N/A'}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">Total Spent</label>
+                            <p class="font-medium text-accent">$${(sub.totalSpent || 0).toFixed(2)}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Usage Stats -->
+                <div class="gradient-border glass p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold mb-4">Usage Statistics</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="text-sm text-dark-400">Messages Today</label>
+                            <p class="text-2xl font-bold">${sub.user?.messagesToday || 0} <span class="text-sm text-dark-400">/ ${sub.user?.dailyLimit || '∞'}</span></p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">Total Messages</label>
+                            <p class="text-2xl font-bold">${sub.user?.messagesTotal || 0}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm text-dark-400">Last Active</label>
+                            <p class="font-medium">${sub.user?.lastActiveAt ? new Date(sub.user.lastActiveAt).toLocaleDateString() : 'Never'}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex justify-between items-center pt-6 border-t border-dark-700/30">
+                    <button onclick="closeSubscriptionModal()" class="px-6 py-3 rounded-lg bg-dark-700 hover:bg-dark-600 transition font-medium">
+                        Cancel
+                    </button>
+                    <button onclick="saveSubscriptionChanges()" class="px-6 py-3 rounded-lg bg-accent hover:bg-accent/90 transition font-medium">
+                        Save Changes
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('subscriptionContent').innerHTML = content;
+        }
+        
+        function closeSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.add('hidden');
+            currentSubscription = null;
+        }
+        
+        async function saveSubscriptionChanges() {
+            if (!currentSubscription) return;
+            
+            const newPlan = document.getElementById('planSelect').value;
+            const newStatus = document.getElementById('statusSelect').value;
+            
+            const changes = [];
+            
+            try {
+                // Update plan if changed
+                if (newPlan !== currentSubscription.plan) {
+                    const planRes = await fetch(`${API_BASE}/api/admin/subscriptions/${currentSubscription.id}/plan`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ plan: newPlan })
+                    });
+                    const planData = await planRes.json();
+                    if (planData.success) {
+                        changes.push('plan');
+                    }
+                }
+                
+                // Update status if changed
+                if (newStatus !== currentSubscription.status) {
+                    const statusRes = await fetch(`${API_BASE}/api/admin/subscriptions/${currentSubscription.id}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    const statusData = await statusRes.json();
+                    if (statusData.success) {
+                        changes.push('status');
+                    }
+                }
+                
+                if (changes.length > 0) {
+                    alert(`Successfully updated ${changes.join(' and ')}`);
+                    closeSubscriptionModal();
+                    loadSubscriptions(); // Reload the list
+                } else {
+                    alert('No changes to save');
+                }
+            } catch (error) {
+                console.error('Failed to save changes:', error);
+                alert('Failed to save changes: ' + error.message);
+            }
+        }
+    </script>
 </body>
 </html>
