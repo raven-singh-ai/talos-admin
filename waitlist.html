@@ -391,7 +391,7 @@
             }
 
             tbody.innerHTML = entries.map((entry, index) => `
-                <tr class="border-b border-dark-700/50 hover:bg-dark-800/30">
+                <tr class="border-b border-dark-700/50 ${!entry.accountCreated ? 'hover:bg-dark-800/30 cursor-pointer' : 'opacity-40 cursor-not-allowed'}">
                     <td class="py-3 px-4">
                         ${!entry.accountCreated ? 
                             `<input type="checkbox" 
