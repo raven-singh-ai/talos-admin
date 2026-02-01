@@ -4,7 +4,9 @@
   "description": "",
   "main": "tailwind.config.js",
   "scripts": {
-    "build": "npx tailwindcss -i input.css -o styles.css --minify"
+    "build": "npx tailwindcss -i input.css -o styles.css --minify",
+    "deploy": "npm run build && vercel --prod",
+    "deploy:fast": "vercel --prod --force"
   },
   "keywords": [],
   "author": "",
